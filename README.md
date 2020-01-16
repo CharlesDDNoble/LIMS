@@ -1,4 +1,4 @@
-# CS4430-GroupProject
+# CS4430 - Group Project
 
 # Notes
 - Books Application
