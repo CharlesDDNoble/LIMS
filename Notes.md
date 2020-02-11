@@ -4,14 +4,40 @@ CS4430 - Group Project
 
 Notes from 02/11/2020
 
+TO DO:
+Kyle & Anthony: UI DESIGN
+Charles: Redo the Schema
+Kyle: initialize a project, Extendable Frameworks
+Ram: Looking into Azure
+
 > Razer - all in one, any db, html / web ui
 
 > use kyle-sherman.com for hosting
 
 > use triggers to check for past due, maybe checks
 
-Features we want to include:
-- 
+'''Features to consider'''
+> location / shelf location
+> Search 
+	- ISBN
+	- Genre
+	- Author
+	- rating 
+	- etc.
+> Checkout books / reserve
+> Login / registration / accounts rolls, managers, users
+> user data - name, phone, address, order history
+> user reviews
+	- featured books
+> reservations
+> order books
+> book requests
+	
+Tech Stack
+> ASP.net
+    > Razor Framework
+> Microsoft Azure
+> mySQL
 
 -----------------------
 
