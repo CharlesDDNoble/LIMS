@@ -5,6 +5,7 @@ CS4430 - Group Project
 Notes from 02/11/2020
 
 > Razer - all in one, any db, html / web ui
+
 > use kyle-sherman.com for hosting
 
 -----------------------
