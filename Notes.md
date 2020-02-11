@@ -8,6 +8,11 @@ Notes from 02/11/2020
 
 > use kyle-sherman.com for hosting
 
+> use triggers to check for past due, maybe checks
+
+Features we want to include:
+- 
+
 -----------------------
 
 
