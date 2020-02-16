@@ -6,11 +6,22 @@ replicates a standard library inventory tracking system using C# as the
 base language and MySQL as the DBMS. The intended users of the application 
 are employees at a library as well as library customers. 
 
-### features include: ####
-+ Seeing what books are currently checked out
-+ Seeing what books are in stock
-+ placing an order for new books
+### Features Include: ####
+*User:*
 + Search results w/filtering by:
     + Author
     + Date published
     + Genre
++ Placing reservations
++ Placing book requests
++ Reviewing Books
++ Checking book availability (not reserved/checked out)
+*Employee:*
++ Seeing when checked out books are available
++ Checking book location
++ Seeing what books are in stock
+*Manager:*
++ Placing orders for new books
++ Seeing book orders
++ Checking book requests
+
