@@ -21,6 +21,7 @@ are employees at a library as well as library customers.
 + Seeing when checked out books are available
 + Checking book location
 + Seeing what books are in stock
++ Adding new books and new copies of books to db
 
 *Manager:*
 + Placing orders for new books
