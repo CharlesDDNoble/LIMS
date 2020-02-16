@@ -16,10 +16,12 @@ are employees at a library as well as library customers.
 + Placing book requests
 + Reviewing Books
 + Checking book availability (not reserved/checked out)
+
 *Employee:*
 + Seeing when checked out books are available
 + Checking book location
 + Seeing what books are in stock
+
 *Manager:*
 + Placing orders for new books
 + Seeing book orders
