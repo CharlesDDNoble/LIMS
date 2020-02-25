@@ -36,6 +36,14 @@ Guest Pages:
     item - Charles
     login/register - Ram
 
+### Notes: ###
++ DB SCHEMA
+    - BookDetails
+	    - ADD LOCATION  
+    - Books
+	    - ADD Summary
++ Problems with DB connect on WMU campus
+
 ###  TIMELINE ###
 GUEST PAGES: 3/16
 USER/EMPLOYEE: 3/31
