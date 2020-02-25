@@ -31,10 +31,10 @@ Notes from 02/25/2020
 
 ### ToDo: ###
 Guest Pages:
-    index - Kyle
-    results - Anthony
-    item - Charles
-    login/register - Ram
+    + index - Kyle
+    + results - Anthony
+    + item - Charles
+    + login/register - Ram
 
 ### Notes: ###
 + DB SCHEMA
