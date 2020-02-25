@@ -12,6 +12,7 @@ are employees at a library as well as library customers.
     + Author
     + Date published
     + Genre
+    + Type (if differents products)
 + Placing reservations
 + Placing book requests
 + Reviewing Books
