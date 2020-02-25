@@ -27,3 +27,18 @@ Notes from 02/25/2020
 *Manager*
 + Order
 + View/fufil requests
+
+
+### ToDo: ###
+Guest Pages:
+    index - Kyle
+    results - Anthony
+    item - Charles
+    login/register - Ram
+
+###  TIMELINE ###
+GUEST PAGES: 3/16
+USER/EMPLOYEE: 3/31
+MANAGER: 4/14
+PRESENTATION: 4/21
+
