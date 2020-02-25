@@ -12,15 +12,18 @@ Notes from 02/25/2020
 + Search Results
 + Item
     - If USER reserve
+
 *User*
 + Profile
     - edit?
     - delete?
     - logout?
 + Request
+
 *Employeee*
 + Checkout
 + Dashboard
+
 *Manager*
 + Order
 + View/fufil requests
