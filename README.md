@@ -7,12 +7,14 @@ base language and MySQL as the DBMS. The intended users of the application
 are employees at a library as well as library customers. 
 
 ### Features Include: ####
-*User:*
+*Guest*
 + Search results w/filtering by:
     + Author
     + Date published
     + Genre
     + Type (if differents products)
+
+*User:*
 + Placing reservations
 + Placing book requests
 + Reviewing Books
@@ -20,7 +22,6 @@ are employees at a library as well as library customers.
 
 *Employee:*
 + Seeing when checked out books are available
-+ Checking book location
 + Seeing what books are in stock
 + Adding new books and new copies of books to db
 
@@ -28,4 +29,3 @@ are employees at a library as well as library customers.
 + Placing orders for new books
 + Seeing book orders
 + Checking book requests
-
