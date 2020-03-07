@@ -44,9 +44,3 @@ Guest Pages:
 	    * ADD Summary
 + Problems with DB connect on WMU campus
 
-###  TIMELINE ###
-+ GUEST PAGES: 3/16
-+ USER/EMPLOYEE: 3/31
-+ MANAGER: 4/14
-+ PRESENTATION: 4/21
-
