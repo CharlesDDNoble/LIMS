@@ -31,22 +31,16 @@ Notes from 02/25/2020
 
 ### ToDo: ###
 Guest Pages:
-    + index - Kyle
-    + results - Anthony
-    + item - Charles
-    + login/register - Ram
++ index: Kyle
++ results: Anthony
++ item: Charles
++ login/register: Ram
 
 ### Notes: ###
 + DB SCHEMA
     - BookDetails
-	    - ADD LOCATION  
+	    * ADD LOCATION  
     - Books
-	    - ADD Summary
+	    * ADD Summary
 + Problems with DB connect on WMU campus
-
-###  TIMELINE ###
-+ GUEST PAGES: 3/16
-+ USER/EMPLOYEE: 3/31
-+ MANAGER: 4/14
-+ PRESENTATION: 4/21
 
