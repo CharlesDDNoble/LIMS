@@ -23,7 +23,8 @@ namespace LIMS
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            new LoadConnectionConfig(); // Read the JSon data on program startup
+            Connection conn = new Connection(); // Read the JSon data on program startup
+            conn.readJson();
             services.AddRazorPages();
         }
 

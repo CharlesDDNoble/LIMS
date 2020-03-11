@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.IO;
 using System.Text;
+using System.Data.SqlClient;
 
 
 namespace LIMS
@@ -33,26 +34,11 @@ namespace LIMS
 
         public static string _filePath = "DB_Config.json";
 
+        protected static SqlConnection conn;
+
         // this is the default constructor
         public Connection()
         {
-            readJson();
-        }
-
-        // this is the constructor that will be used for performing actions
-        /// <summary>
-        ///     Connection(action) for two actions
-        ///         i. Connection("open") will open the connection
-        ///         ii. Connection("close") will close the connection
-        /// </summary>
-        public Connection(string action)
-        {
-            // decide which action to take
-            if (action == "open")
-                openConnection();
-            else if (action == "close")
-                closeConnection();
-
         }
 
         public void readJson()
@@ -77,7 +63,11 @@ namespace LIMS
                 User = json.User;
                 Password = json.Password;
 
-                connString = ServerAddress + ":" + ServerPort + ", " + Database + ", " + User + ", " + Password;
+                connString = 
+                    "Data Source="+ServerAddress+":"+ServerPort+";"+
+                    "Initial Catalog="+Database+";"+
+                    "User id"+User+";"+
+                    "Password"+Password+";";
             }
             catch (Exception e)
             {
@@ -89,13 +79,22 @@ namespace LIMS
         // this method will allow us to quickly open a connection
         public void openConnection()
         {
-
+            // create a new instance
+            // set the connection string
+            // then open the connection
+            conn = new SqlConnection();
+            conn.ConnectionString = connString;
+            conn.Open();
         }
 
         // this method will allow us to quickly close a connection
         public void closeConnection()
-        {
-
+        {   
+            // if a connection has been defined and it does not contain the closed flag, then we can close the connection
+            if(conn != null && !conn.State.HasFlag(System.Data.ConnectionState.Closed))
+            {
+                conn.Close();
+            }
         }
 
     }
