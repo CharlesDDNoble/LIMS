@@ -12,15 +12,6 @@ using System.Data.SqlClient;
 
 namespace LIMS
 {
-
-    /// <summary>
-    ///     This class handles all things related to connecting to the database
-    ///     there are two constructors
-    ///     1. default is used only on program startup to load the json data
-    ///     2. Connection(action) for two actions
-    ///         i. Connection("open") will open the connection
-    ///         ii. Connection("close") will close the connection
-    /// </summary>
     public class Connection
     {
         // create the properties we will use when loading the data from the json file
@@ -35,11 +26,6 @@ namespace LIMS
         public static string _filePath = "DB_Config.json";
 
         protected static SqlConnection conn;
-
-        // this is the default constructor
-        public Connection()
-        {
-        }
 
         public void readJson()
         {
