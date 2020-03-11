@@ -11,6 +11,8 @@ namespace LIMS.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        public string conn { get; set; } = LoadConnectionConfig.connString;
+
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -19,7 +21,7 @@ namespace LIMS.Pages
 
         public void OnGet()
         {
-
+            
         }
     }
 }

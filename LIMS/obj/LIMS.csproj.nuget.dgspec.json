@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Pvt Noble.000\\source\\repos\\LIMS\\LIMS.csproj": {}
+    "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Pvt Noble.000\\source\\repos\\LIMS\\LIMS.csproj": {
+    "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Pvt Noble.000\\source\\repos\\LIMS\\LIMS.csproj",
+        "projectUniqueName": "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj",
         "projectName": "LIMS",
-        "projectPath": "C:\\Users\\Pvt Noble.000\\source\\repos\\LIMS\\LIMS.csproj",
-        "packagesPath": "C:\\Users\\Pvt Noble.000\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Pvt Noble.000\\source\\repos\\LIMS\\obj\\",
+        "projectPath": "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj",
+        "packagesPath": "C:\\Users\\Electrik\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Pvt Noble.000\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Electrik\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -44,6 +41,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[3.1.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
             },
             "bootstrap": {
               "target": "Package",
@@ -72,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
