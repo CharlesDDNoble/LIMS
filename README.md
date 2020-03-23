@@ -8,6 +8,9 @@ are employees at a library as well as library customers.
 
 ### Dependencies
 + Visual Studio 2019
+    - ASP.NET and web development
+    - .NET desktop development
+    - .NET Core cross-platform development
 + MySQL 8.0.19
     - MySQL Connector/NET 8.0.19
 + Bootstrap 4.4.1
