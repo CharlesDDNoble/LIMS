@@ -33,3 +33,5 @@ LIMS/obj/Debug/netcoreapp3.1/LIMS.dll
 LIMS/obj/Debug/netcoreapp3.1/LIMS.pdb
 LIMS/.vs/LIMS/v16/.suo
 LIMS/.vs/LIMS/v16/Server/sqlite3/storage.ide
+LIMS/bin/Debug/netcoreapp3.1/DB_Config.json
+LIMS/DB_Config.json
