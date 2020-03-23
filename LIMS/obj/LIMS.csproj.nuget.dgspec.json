@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj": {}
+    "C:\\Users\\Pvt Noble\\Documents\\GitHub\\CS4430-GroupProject\\LIMS\\LIMS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj": {
+    "C:\\Users\\Pvt Noble\\Documents\\GitHub\\CS4430-GroupProject\\LIMS\\LIMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj",
+        "projectUniqueName": "C:\\Users\\Pvt Noble\\Documents\\GitHub\\CS4430-GroupProject\\LIMS\\LIMS.csproj",
         "projectName": "LIMS",
-        "projectPath": "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\LIMS.csproj",
-        "packagesPath": "C:\\Users\\Electrik\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Electrik\\Documents\\git\\CS4430-GroupProject\\LIMS\\obj\\",
+        "projectPath": "C:\\Users\\Pvt Noble\\Documents\\GitHub\\CS4430-GroupProject\\LIMS\\LIMS.csproj",
+        "packagesPath": "C:\\Users\\Pvt Noble.000\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Pvt Noble\\Documents\\GitHub\\CS4430-GroupProject\\LIMS\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Electrik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Pvt Noble.000\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -42,6 +45,10 @@
               "target": "Package",
               "version": "[3.1.1, )"
             },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.19, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.3, )"
@@ -53,10 +60,6 @@
             "bootstrap": {
               "target": "Package",
               "version": "[4.4.1, )"
-            },
-            "jQuery": {
-              "target": "Package",
-              "version": "[3.4.1, )"
             }
           },
           "imports": [
@@ -77,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
