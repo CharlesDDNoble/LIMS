@@ -14,34 +14,40 @@ namespace LIMS
         public string Search { get; private set; }
         public List<Dictionary<string, string>> Results { get; private set; } = new List<Dictionary<string, string>>();
 
-        public void OnGet(string filter, string search)
+        public void OnGet(string search, string filter)
         {
 
-            if (filter == "Title" || filter == "Author" || filter == "Search")
+            // Manually Sanitize the filter
+            // Don't even try to use Parameters with a Column name, trust me! :(
+            if (filter == "author" || filter == "genre")
             {
                 Filter = filter;
             } else
             {
-                Filter = "Title";
+                Filter = "title";
             }
 
             if (search == null)
             {
                 Search = "";
+            } else
+            {
+                Search = search;
             }
-            Search = "%" + Search + "%";
+
 
             var handler = new ConnectionHandler();
             var connection = handler.Connection;
 
+            Console.WriteLine(Filter);
+            Console.WriteLine(Search);
             try
             {
-                string sql = "SELECT imagePath, title, author, genre, summary, ISBN FROM Books WHERE @Filter LIKE @Search";
+                string sql = "SELECT imagePath, title, author, genre, summary, ISBN FROM Books WHERE " + Filter + " LIKE @SEARCH";
                 MySqlCommand cmd = new MySqlCommand(sql, connection);
-                cmd.Parameters.AddWithValue("@Filter", Filter);
-                cmd.Parameters.AddWithValue("@Search", Search);
+                cmd.Parameters.AddWithValue("@SEARCH", '%' + Search + '%');
                 MySqlDataReader rdr = cmd.ExecuteReader();
-
+                
                 while (rdr.Read())
                 {
                     string summary = (string)rdr[4];
@@ -60,8 +66,6 @@ namespace LIMS
                         { "ISBN", (string)rdr[5] }
                     };
                     Results.Add(row);
-                    //Console.WriteLine(String.Format("[imagePath:{0},title:{1},author:{2},genre:{3},summary:{4},ISBN:{5}]",
-                                                    //row["imagePath"], row["title"], row["author"], row["genre"], row["summary"], row["ISBN"]));
                 }
 
                 rdr.Close();

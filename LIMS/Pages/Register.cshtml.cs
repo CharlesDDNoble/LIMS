@@ -9,9 +9,12 @@ namespace LIMS
 {
     public class RegisterModel : PageModel
     {
-        public void OnGet()
+        public void OnPost(string username, string password)
         {
-
+            if (username == null && password == null)
+            {
+                
+            }
         }
     }
 }

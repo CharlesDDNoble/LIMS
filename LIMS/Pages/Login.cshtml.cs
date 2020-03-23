@@ -9,9 +9,13 @@ namespace LIMS
 {
     public class LoginModel : PageModel
     {
-        public void OnGet()
+        public bool isValid { get; private set; } = false;
+        public void OnPost(string username, string password)
         {
+            if (username == null && password == null)
+            {
 
+            }
         }
     }
 }
