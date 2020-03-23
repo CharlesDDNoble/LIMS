@@ -1,5 +1,6 @@
 # Library Inventory Management System - CS4430 - Final Group Project
 
+### Description
 This is the Library Inventory Management System (LIMS) made a part of our 
 (*insert names*) WMU Database Management Class Final in 2020. The LIMS 
 replicates a standard library inventory tracking system using C# as the 
