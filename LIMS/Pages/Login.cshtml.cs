@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+
 using System.Security.Cryptography;
 using MySql.Data.MySqlClient;
 using System.Text;
@@ -21,13 +22,8 @@ namespace LIMS
 
         public void OnPost(string username, string password)
         {
-            isLoginAttempt = false;
+            isLoginAttempt = true;
             if (username != null && password != null)
-            {
-                isValid = true;
-            }
-
-            if (isValid)
             {
                 try
                 {
@@ -43,8 +39,9 @@ namespace LIMS
                         var hashedPassword = (string)rdr[0];
                         var salt = (string)rdr[1];
                         SHA256 hash = SHA256.Create();
-                        // Salt the password, convert it to a byte[], then compute the hash of the resulting byte[]
-                        var computedHash = hash.ComputeHash(Encoding.ASCII.GetBytes(password + salt));
+                        // Salt the password, convert it to a byte[], compute the hash, then convert back to string for comparison
+                        var computedHash = Encoding.ASCII.GetString(hash.ComputeHash(Encoding.ASCII.GetBytes(password + salt)));
+                        
                         if (computedHash.ToString() == hashedPassword)
                         {
                             isValid = true;
