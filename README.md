@@ -6,6 +6,25 @@ replicates a standard library inventory tracking system using C# as the
 base language and MySQL as the DBMS. The intended users of the application 
 are employees at a library as well as library customers. 
 
+### Dependencies
++ Visual Studio 2019
++ MySQL 8.0.19
+    - MySQL Connector/NET 8.0.19
++ Bootstrap 4.4.1
+
+### Installation
+*I've (Charles) been using a local MySQL database to test the project. For now I'll assume that's what will be used until we get something else more concrete up and running.*
+1. Install (Visual Studio 2019)[https://visualstudio.microsoft.com/vs/] using the Visual Studio installer
+    a. within the Visual Studio installer, add the "ASP.NET and web development" package
+    b. within the Visual Studio installer, add the ".NET desktop development" package
+    c. within the Visual Studio installer, add the ".NET Core cross-platform development" package
+2. Install (MySQL 8.0.19)[https://dev.mysql.com/downloads/mysql/]
+    a. install the (MySQL .NET connector)[https://dev.mysql.com/downloads/connector/net/] 
+3. Build the database
+    a. Connect to your MySQL Server
+    b. Run the database building script */scripts/create_lims_db.sql*
+4. Configure the database connection in DB_Config.json
+
 ### Features Include: ####
 *Guest*
 + Search results w/filtering by:
