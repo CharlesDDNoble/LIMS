@@ -35,14 +35,10 @@ namespace LIMS
                 Search = search;
             }
 
-
-            var handler = new ConnectionHandler();
-            var connection = handler.Connection;
-
-            Console.WriteLine(Filter);
-            Console.WriteLine(Search);
             try
             {
+                var handler = new ConnectionHandler();
+                MySqlConnection connection = handler.Connection;
                 string sql = "SELECT imagePath, title, author, genre, summary, ISBN FROM Books WHERE " + Filter + " LIKE @SEARCH";
                 MySqlCommand cmd = new MySqlCommand(sql, connection);
                 cmd.Parameters.AddWithValue("@SEARCH", '%' + Search + '%');
@@ -75,7 +71,6 @@ namespace LIMS
                 Console.WriteLine(ex);
             }
 
-            connection.Close();
         }
     }
 }

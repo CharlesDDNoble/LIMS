@@ -11,39 +11,39 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="first-name">First Name</label>
-                <input type="text" id="first-name" class="form-control">
+                <input type="text" name="firstName" id="first-name" class="form-control" placeholder="John">
             </div>
             <div class="form-group col-md-6">
                 <label for="last-name">Last Name</label>
-                <input type="text" id="last-name" class="form-control">
+                <input type="text" name="lastName" id="last-name" class="form-control" placeholder="Doe">
             </div>
+        </div>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" class="form-control" id="username" placeholder="JohnDoe123">
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password">
+                <input type="password" name="password1" class="form-control" id="password">
             </div>
             <div class="form-group col-md-6">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" class="form-control" id="confirm-password">
+                <input type="password" name="password2" class="form-control" id="confirm-password">
             </div>
         </div>
         <div class="form-group">
-            <label for="address1">Address</label>
-            <input type="text" class="form-control" id="address" placeholder="1234 Main St">
-        </div>
-        <div class="form-group">
-            <label for="address2">Address (Cont.)</label>
-            <input type="text" class="form-control" id="address2" placeholder="Apartment, studio, or floor">
+            <label for="address">Address</label>
+            <input type="text" name="address" class="form-control" id="address" placeholder="1234 Main St">
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="city">City</label>
-                <input type="text" class="form-control" id="city">
+                <input type="text" name="city" class="form-control" id="city" placeholder="Examplesburgh">
             </div>
             <div class="form-group col-md-4">
                 <label for="state">State</label>
-                <select id="state" class="form-control">
+                <select id="state" name="state" class="form-control">
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
                     <option value="AZ">Arizona</option>
@@ -99,8 +99,12 @@
             </div>
             <div class="form-group col-md-2">
                 <label for="zip">Zip</label>
-                <input type="text" class="form-control" id="zip">
+                <input type="text" name="zip" class="form-control" id="zip" placeholder="12345">
             </div>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" name="phone" class="form-control" id="phone">
         </div>
         <div class="form-group d-flex">
             <button type="submit" class="btn btn-primary ml-auto">Register!</button>

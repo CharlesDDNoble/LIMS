@@ -21,8 +21,7 @@ namespace LIMS
 
         public void OnGet(string isbn)
         {
-            var handler = new ConnectionHandler();
-            var connection = handler.Connection;
+
             if (isbn == null)
             {
                 ISBN = "0000000000000";
@@ -33,11 +32,13 @@ namespace LIMS
 
             try
             {
+                var handler = new ConnectionHandler();
+                MySqlConnection connection = handler.Connection;
                 string sql = "SELECT * FROM Books WHERE ISBN=@ISBN";
                 MySqlCommand cmd = new MySqlCommand(sql, connection);
                 cmd.Parameters.AddWithValue("@ISBN", ISBN);
                 MySqlDataReader rdr = cmd.ExecuteReader();
-                Console.WriteLine(ISBN);
+
                 if (rdr.Read())
                 {
                     //this.ISBN = (string) rdr[0];
@@ -54,8 +55,6 @@ namespace LIMS
             {
                 Console.WriteLine(ex);
             }
-
-            connection.Close();
         }
     }
 }
