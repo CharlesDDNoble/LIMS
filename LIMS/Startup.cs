@@ -25,6 +25,16 @@ namespace LIMS
         {
             ConnectionHandler handler = new ConnectionHandler(); // Read the JSon data on program startup
             handler.ReadJson();
+
+            // Sessions startup
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddRazorPages();
         }
 
@@ -44,6 +54,8 @@ namespace LIMS
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseSession();
 
             app.UseRouting();
 

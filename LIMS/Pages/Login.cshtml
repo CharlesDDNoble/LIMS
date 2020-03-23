@@ -5,20 +5,63 @@
 }
 
 
-<div class="container w-75">
-    <h1>Login</h1>
-    <form>
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username">
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="form-group d-flex">
-            <a asp-page="/Register" class="mr-auto">Don't have an account? Register here!</a>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </form>
-</div>
+    <div class="container w-75">
+        @if (Model.SuccessString == "true")
+        {
+            <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="mr-auto">Success</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        Congratulations! Your registration was successful!
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.SuccessString == "false")
+        {
+            <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center" style="min-height: 100px;">
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="mr-auto">Error</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        Your login attempt was unsuccessful...
+                    </div>
+                </div>
+            </div>
+        }
+
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1">
+            </div>
+            <div class="form-group d-flex">
+                <a asp-page="/Register" class="mr-auto">Don't have an account? Register here!</a>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+
+<script>
+    $(document).ready(function () {
+        $(".toast").toast({ delay: 7000 });
+        $(".toast").toast('show');
+        $(".toast").on('hidden.bs.toast', function () {
+            $(this).parent().remove();
+        });
+    });
+</script>

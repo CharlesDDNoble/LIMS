@@ -23,10 +23,12 @@ namespace LIMS
         {
 
         }
-        public void OnPost(string firstName, string lastName, string username, string password1,
+        public IActionResult OnPost(string firstName, string lastName, string username, string password1,
                            string password2, string address, string city, string state, string zip,
                            string phone)
         {
+            var redirect = Redirect("/Register");
+
             try
             {
                 var handler = new ConnectionHandler();
@@ -43,7 +45,7 @@ namespace LIMS
                     HasToRollback = true;
                 }
 
-                if (password1 != password2)
+                if (password1 != password2 && !HasToRollback)
                 {
                     HasDifferentPasswords = true;
                     HasToRollback = true;
@@ -56,22 +58,47 @@ namespace LIMS
                     SHA256 hash = SHA256.Create();
 
                     var salt = hash.ComputeHash(Encoding.ASCII.GetBytes(username + rand.Next().ToString()));
-                    var hashPassword = hash.ComputeHash(Encoding.ASCII.GetBytes(password1 + salt));
+                    var hashedPassword = hash.ComputeHash(Encoding.ASCII.GetBytes(password1 + salt));
 
-                    sql = "INSERT INTO Users(@USERNAME, @PASSWORD, @SALT, 'guest', @FIRSTNAME, @LASTNAME, @ADDRESS, @STATE, @PHONE)";
+                    sql = "INSERT INTO Users(username,password,salt,accountType,firstName,lastName,address,city,zip,state,phone) " +
+                          "VALUES (@USERNAME, @PASSWORD, @SALT, 'guest', @FIRSTNAME, @LASTNAME, @ADDRESS, @CITY, @ZIP, @STATE, @PHONE)";
                     cmd = new MySqlCommand(sql, trans.Connection);
-
-                } else
+                    cmd.Parameters.AddWithValue("@USERNAME", username);
+                    cmd.Parameters.AddWithValue("@PASSWORD", hashedPassword);
+                    cmd.Parameters.AddWithValue("@SALT", salt);
+                    cmd.Parameters.AddWithValue("@FIRSTNAME", firstName);
+                    cmd.Parameters.AddWithValue("@LASTNAME", lastName);
+                    cmd.Parameters.AddWithValue("@ADDRESS", address);
+                    cmd.Parameters.AddWithValue("@CITY", city);
+                    cmd.Parameters.AddWithValue("@ZIP", zip);
+                    cmd.Parameters.AddWithValue("@STATE", state);
+                    cmd.Parameters.AddWithValue("@PHONE", phone);
+                    rdr = cmd.ExecuteReader();
+                }
+                else
                 {
                     IsUsernameTaken = true;
                     HasToRollback = true;
                 }
                 rdr.Close();
+
+                if (!HasToRollback)
+                {
+                    trans.Commit();
+                    redirect = Redirect("/Login?success=true");
+                }
+                else
+                {
+                    redirect = Redirect(String.Format("/Register?error=true&hasnullfield={0}&hasdifferentpasswords={1}&isusernametaken={2}",
+                                                                HasNullField, HasDifferentPasswords, IsUsernameTaken));
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
+
+            return redirect;
         }
     }
 }
