@@ -21,12 +21,11 @@ namespace LIMS
 
         public void OnGet()
         {
-            var connectionString = "server=127.0.0.1;uid=test;pwd=test123;database=lims";
-            var connection = new MySqlConnection(connectionString);
+            var handler = new ConnectionHandler();
+            var connection = handler.Connection;
             try
             {
                 Log += "Connecting to MySQL...<br>";
-                connection.Open();
 
                 string sql = "SELECT * FROM Books WHERE ISBN='0000000000000'";
                 MySqlCommand cmd = new MySqlCommand(sql, connection);

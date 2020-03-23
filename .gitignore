@@ -26,3 +26,10 @@ LIMS/obj/Debug/netcoreapp3.1/LIMS.Views.pdb
 LIMS/obj/LIMS.csproj.nuget.dgspec.json
 LIMS/obj/LIMS.csproj.nuget.g.props
 LIMS/.vs/LIMS/v16/.suo
+LIMS/bin/Debug/netcoreapp3.1/DB_Config.json
+LIMS/DB_Config.json
+LIMS/obj/Debug/netcoreapp3.1/LIMS.csprojAssemblyReference.cache
+LIMS/obj/Debug/netcoreapp3.1/LIMS.dll
+LIMS/obj/Debug/netcoreapp3.1/LIMS.pdb
+LIMS/.vs/LIMS/v16/.suo
+LIMS/.vs/LIMS/v16/Server/sqlite3/storage.ide
