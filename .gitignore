@@ -1,4 +1,3 @@
-
 LIMS/.vs/LIMS/config/applicationhost.config
 LIMS/obj/LIMS.csproj.nuget.cache
 LIMS/obj/LIMS.csproj.nuget.dgspec.json
@@ -17,7 +16,6 @@ LIMS/bin/Debug/netcoreapp3.1/LIMS.Views.dll
 LIMS/bin/Debug/netcoreapp3.1/LIMS.Views.pdb
 LIMS/obj/Debug/netcoreapp3.1/LIMS.assets.cache
 LIMS/obj/Debug/netcoreapp3.1/LIMS.csproj.FileListAbsolute.txt
-LIMS/obj/Debug/netcoreapp3.1/LIMS.csprojAssemblyReference.cache
 LIMS/obj/Debug/netcoreapp3.1/LIMS.dll
 LIMS/obj/Debug/netcoreapp3.1/LIMS.exe
 LIMS/obj/Debug/netcoreapp3.1/LIMS.pdb
@@ -25,13 +23,47 @@ LIMS/obj/Debug/netcoreapp3.1/LIMS.Views.dll
 LIMS/obj/Debug/netcoreapp3.1/LIMS.Views.pdb
 LIMS/obj/LIMS.csproj.nuget.dgspec.json
 LIMS/obj/LIMS.csproj.nuget.g.props
-LIMS/.vs/LIMS/v16/.suo
 LIMS/bin/Debug/netcoreapp3.1/DB_Config.json
 LIMS/DB_Config.json
 LIMS/obj/Debug/netcoreapp3.1/LIMS.csprojAssemblyReference.cache
-LIMS/obj/Debug/netcoreapp3.1/LIMS.dll
 LIMS/obj/Debug/netcoreapp3.1/LIMS.pdb
-LIMS/.vs/LIMS/v16/.suo
 LIMS/.vs/LIMS/v16/Server/sqlite3/storage.ide
 LIMS/bin/Debug/netcoreapp3.1/DB_Config.json
-LIMS/DB_Config.json
+
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
+
+# Visual Studio Code
+.vscode
+
+# Rider
+.idea
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio 2015
+.vs/
