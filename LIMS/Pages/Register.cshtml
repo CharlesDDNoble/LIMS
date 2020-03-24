@@ -3,55 +3,10 @@
 @{
     ViewData["Title"] = "Register";
 }
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery AntiForgery;
 
-
-<div class="container w-75">
-
-    @if (Model.IsUsernameTaken) {
-
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="mr-auto">Error</strong>
-            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="toast-body">
-            Sorry that username has already been taken!
-        </div>
-    </div>
-    }
-
-    @if (Model.HasNullField) {
-
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="mr-auto">Error</strong>
-            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="toast-body">
-            All fields must be filled out!
-        </div>
-    </div>
-    }
-
-    @if (Model.HasDifferentPasswords) {
-
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="mr-auto">Error</strong>
-            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="toast-body">
-            The passwords did not match!
-        </div>
-    </div>
-    }
-
+<div id="main-container" class="container w-75">
 
     <h1>Register</h1>
     <form>
@@ -72,11 +27,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="password">Password</label>
-                <input type="password" name="password1" class="form-control" id="password">
+                <input type="password" name="password" class="form-control" id="password">
             </div>
             <div class="form-group col-md-6">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" name="password2" class="form-control" id="confirm-password">
+                <input type="password" name="confirm-password" class="form-control" id="confirm-password">
             </div>
         </div>
         <div class="form-group">
@@ -154,7 +109,91 @@
             <input type="text" name="phone" class="form-control" id="phone">
         </div>
         <div class="form-group d-flex">
-            <button type="submit" class="btn btn-primary ml-auto">Register!</button>
+            <button id="form-submit" type="button" class="btn btn-primary ml-auto">Register!</button>
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function () {
+        // Toast handler
+        function createToast(type, text) {
+            $("#main-container").prepend(`
+                <div id="toast-generic" class="toast" role="${type}" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="mr-auto">Error</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        ${text}
+                    </div>
+                </div>
+            `);
+
+            $(".toast").toast({ delay: 7000 });
+            $('.toast').on('hidden.bs.toast', function () {
+                $(this).remove();
+            })
+            $(".toast").toast('show');
+        }
+
+        // attach event handler to submit button to handle async form submission
+        $("#form-submit").on('click', function () {
+            // TODO: LOCK SUBMIT BUTTON => change text to "Please wait..."
+            // grab values
+            // TODO: Do validation here, don't send request if invalid
+            var fname = $("#first-name").val();
+            var lname = $("#last-name").val();
+            var uname = $("#username").val();
+            var pass1 = $("#password").val();
+            var pass2 = $("#confirm-password").val();
+            var addr = $("#address").val();
+            var city = $("#city").val();
+            var zip = $("#zip").val();
+            var phone = $("#phone").val();
+            console.log("Starting AJAX");
+
+            //$.post( "~/Register", function( data ) {
+            //  $( "#main-content" ).append( data );
+            //});
+
+            $.ajax({
+                method: "POST",
+                url: "Register",
+                context: document.body,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    'RequestVerificationToken': '@AntiForgery.GetAndStoreTokens(HttpContext).RequestToken'
+                },
+                data: JSON.stringify({
+                    firstName: fname,
+                    lastName: lname,
+                    username: uname,
+                    password1: pass1,
+                    password2: pass2,
+                    address: addr,
+                    city: city,
+                    zip: zip,
+                    phone, phone
+                }),
+                success: function (data) {
+                    window.location.replace("./Login?success=true");
+                    console.log("SUCCESS");
+                    console.log(data);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // CHECK REASON FOR ERROR IN data
+                    console.log("ERROR");
+                    console.log(xhr);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    createToast("alert", "There was an error processing your form!");
+                }
+            });
+        });
+    });
+
+</script>
