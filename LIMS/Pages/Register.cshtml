@@ -151,6 +151,7 @@
             var pass2 = $("#confirm-password").val();
             var addr = $("#address").val();
             var city = $("#city").val();
+            var state = $("#state").val();
             var zip = $("#zip").val();
             var phone = $("#phone").val();
             console.log("Starting AJAX");
@@ -160,9 +161,8 @@
             //});
 
             $.ajax({
-                method: "POST",
+                type: "POST",
                 url: "Register",
-                context: document.body,
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 headers: {
@@ -176,13 +176,20 @@
                     password2: pass2,
                     address: addr,
                     city: city,
+                    state: state,
                     zip: zip,
-                    phone, phone
+                    phone: phone
                 }),
                 success: function (data) {
-                    window.location.replace("./Login?success=true");
-                    console.log("SUCCESS");
+                    console.log("Successfully sent ajax request!");
                     console.log(data);
+                    var json = JSON.parse(data);
+                    if (json.success === "false") {
+                        // TODO: CHECK WHAT THE PROBLEM WAS
+                        createToast("alert", "There was an error processing your form!");
+                    } else {
+                        window.location.replace("./Login?success=true");
+                    }
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     // CHECK REASON FOR ERROR IN data
