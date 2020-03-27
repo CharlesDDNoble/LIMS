@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,6 +13,14 @@
     <script type="text/javascript" src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
+    @if (Context.Session.GetString("userid") != "")
+    {
+        <p>userid not set</p>
+    }
+    else
+    {
+        <p>userid = @Context.Session.GetString("userid")</p>
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -31,10 +41,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
                         </li>
                     </ul>
-                    <form class="form-inline" method="get" action="~/Search" >
+                    <form class="form-inline" method="get" action="~/Search">
                         <div class="input-group">
                             <input type="search" class="form-control" id="search" name="search" placeholder="Type here to search...">
-                            <select class="form-control custom-select" id="filter" name="filter"> 
+                            <select class="form-control custom-select" id="filter" name="filter">
                                 <option selected value="title">Filter by...</option>
                                 <option value="title">Title</option>
                                 <option value="author">Author</option>

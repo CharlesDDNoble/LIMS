@@ -38,20 +38,12 @@ namespace LIMS
 
         public JsonResult OnPost([FromBody]RegistrationForm form)
         {
+            var hasBadField = false;
+            var hasDifPass = false;
+            var isUnameTaken = false;
+            var errorMessage = "";
             try
             {
-                var handler = new ConnectionHandler();
-                MySqlTransaction trans = handler.Connection.BeginTransaction();
-                string sql = "SELECT * FROM Users WHERE username=@USERNAME";
-                MySqlCommand cmd = new MySqlCommand(sql, trans.Connection);
-                cmd.Parameters.AddWithValue("@USERNAME", form.Username);
-                MySqlDataReader rdr = cmd.ExecuteReader();
-
-                var hasBadField = false;
-                var hasDifPass = false;
-                var isUnameTaken = false;
-                var hasError = true;
-
                 if (form.firstName == null || form.lastName == null || form.Username == null 
                     || form.Password1 == null || form.Password2 == null || form.Address == null 
                     || form.City == null || form.State == null || form.Zip == null || form.Phone == null)
@@ -64,7 +56,7 @@ namespace LIMS
                     || form.Address.Length < 2 || form.State.Length != 2 || form.City.Length < 2
                     || form.firstName.Length < 1 || form.lastName.Length < 1)
                 {
-                    hasBadField = false;
+                    hasBadField = true;
                 }
 
                 if (form.Password1 != form.Password2 || form.Password1.Length < 6)
@@ -72,54 +64,66 @@ namespace LIMS
                     hasDifPass = true;
                 }
 
-                if (!rdr.Read() && !hasError)
-                {
-                    Console.WriteLine("Register: No Error in fields");
-                    // create a random salt to hash the password with to
-                    //guard against rainbow tables and other site breaches
-                    var rand = new Random((int)Stopwatch.GetTimestamp());
-                    SHA256 hash = SHA256.Create();
+                var handler = new ConnectionHandler();
+                string sql = "SELECT * FROM Users WHERE username=@USERNAME";
+                MySqlCommand select_username = new MySqlCommand(sql, handler.Connection);
+                select_username.Parameters.AddWithValue("@USERNAME", form.Username);
 
-                    var salt = hash.ComputeHash(Encoding.ASCII.GetBytes(form.Username + rand.Next().ToString()));
-                    var hashedPassword = hash.ComputeHash(Encoding.ASCII.GetBytes(form.Password1 + salt));
+                using (MySqlDataReader rdr = select_username.ExecuteReader())
+                {
+                    if (rdr.Read())
+                    {
+                        isUnameTaken = true;
+                    }
+                }
 
-                    sql = "INSERT INTO Users(username,password,salt,accountType," 
-                                + "firstName,lastName,address,city,zip,state,phone) " +
-                          "VALUES (@USERNAME, @PASSWORD, @SALT, 'guest', " 
-                                + "@FIRSTNAME, @LASTNAME, @ADDRESS, @CITY, @ZIP, @STATE, @PHONE)";
-                    cmd = new MySqlCommand(sql, trans.Connection);
-                    cmd.Parameters.AddWithValue("@USERNAME", form.Username);
-                    cmd.Parameters.AddWithValue("@PASSWORD", hashedPassword);
-                    cmd.Parameters.AddWithValue("@SALT", salt);
-                    cmd.Parameters.AddWithValue("@FIRSTNAME", form.firstName);
-                    cmd.Parameters.AddWithValue("@LASTNAME", form.lastName);
-                    cmd.Parameters.AddWithValue("@ADDRESS", form.Address);
-                    cmd.Parameters.AddWithValue("@CITY", form.City);
-                    cmd.Parameters.AddWithValue("@ZIP", form.Zip);
-                    cmd.Parameters.AddWithValue("@STATE", form.State);
-                    cmd.Parameters.AddWithValue("@PHONE", form.Phone);
-                    rdr = cmd.ExecuteReader();
-                    trans.Commit();
-                }
-                else
+                if (!isUnameTaken && !hasBadField && !hasDifPass)
                 {
-                    isUnameTaken = true;
-                }
-                rdr.Close();
-                if (hasError)
-                {
-                    return new JsonResult($"{{\"hasBadField\":\"{hasBadField}\"," +
-                                          $"\"hasDifferentPasswords\":\"{hasDifPass}\"," +
-                                          $"\"isUsernameTaken\":\"{isUnameTaken}\"," +
-                                          $"\"success\":\"false\"}}", new System.Text.Json.JsonSerializerOptions());
-                }
+                    using (MySqlTransaction trans = handler.Connection.BeginTransaction())
+                    {
+                        Console.WriteLine("Register: No Error in fields");
+                        // create a random salt to hash the password with to
+                        // guard against rainbow tables and other site breaches
+                        var rand = new Random((int)Stopwatch.GetTimestamp());
+                        SHA256 hash = SHA256.Create();
+                        var saltBytes = hash.ComputeHash(Encoding.ASCII.GetBytes(form.Username + rand.Next().ToString()));
+                        var salt = Encoding.ASCII.GetString(saltBytes);
+                        var hashedPasswordBytes = hash.ComputeHash(Encoding.ASCII.GetBytes(form.Password1 + salt));
+                        var hashedPassword = Encoding.ASCII.GetString(hashedPasswordBytes);
+
+                        sql = "INSERT INTO Users(username,password,salt,accountType,"
+                                    + "firstName,lastName,address,city,zip,state,phone) " +
+                              "VALUES (@USERNAME, @PASSWORD, @SALT, 'guest', "
+                                    + "@FIRSTNAME, @LASTNAME, @ADDRESS, @CITY, @ZIP, @STATE, @PHONE)";
+
+                        MySqlCommand insert_user = new MySqlCommand(sql, trans.Connection);
+                        
+                        insert_user.Parameters.AddWithValue("@USERNAME", form.Username);
+                        insert_user.Parameters.AddWithValue("@PASSWORD", hashedPassword);
+                        insert_user.Parameters.AddWithValue("@SALT", salt);
+                        insert_user.Parameters.AddWithValue("@FIRSTNAME", form.firstName);
+                        insert_user.Parameters.AddWithValue("@LASTNAME", form.lastName);
+                        insert_user.Parameters.AddWithValue("@ADDRESS", form.Address);
+                        insert_user.Parameters.AddWithValue("@CITY", form.City);
+                        insert_user.Parameters.AddWithValue("@ZIP", form.Zip);
+                        insert_user.Parameters.AddWithValue("@STATE", form.State);
+                        insert_user.Parameters.AddWithValue("@PHONE", form.Phone);
+                        insert_user.ExecuteNonQuery();
+                        trans.Commit();
+                        return new JsonResult("{\"success\":\"true\"}", new System.Text.Json.JsonSerializerOptions());
+                    }
+                } 
             }
             catch (Exception ex)
             {
+                errorMessage = ex.ToString();
                 Console.WriteLine(ex);
             }
 
-            return new JsonResult("{\"success\":\"true\"}", new System.Text.Json.JsonSerializerOptions());
+            return new JsonResult($"{{\"hasBadField\":\"{hasBadField}\","
+                                  + $"\"hasDifferentPasswords\":\"{hasDifPass}\","
+                                  + $"\"isUsernameTaken\":\"{isUnameTaken}\","
+                                  + $"\"success\":\"false\"}}", new System.Text.Json.JsonSerializerOptions());
         }
     }
 }
