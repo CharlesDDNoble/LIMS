@@ -47,18 +47,27 @@ namespace LIMS
                 cmd.Parameters.AddWithValue("@USERNAME", form.Username);
                 MySqlDataReader rdr = cmd.ExecuteReader();
 
-                var hasNull = false;
+                var hasBadField = false;
                 var hasDifPass = false;
                 var isUnameTaken = false;
                 var hasError = true;
 
-                if (form.firstName == null || form.lastName == null || form.Username == null || form.Password1 == null || form.Password2 == null
-                    || form.Address == null || form.City == null || form.State == null || form.Zip == null || form.Phone == null)
+                if (form.firstName == null || form.lastName == null || form.Username == null 
+                    || form.Password1 == null || form.Password2 == null || form.Address == null 
+                    || form.City == null || form.State == null || form.Zip == null || form.Phone == null)
                 {
-                    hasNull = true;
+                    hasBadField = true;
                 }
 
-                if (form.Password1 != form.Password2 && !hasError)
+                // these should be validated client side as well
+                if (form.Username.Length < 6 || form.Zip.Length != 5 || form.Phone.Length != 10 
+                    || form.Address.Length < 2 || form.State.Length != 2 || form.City.Length < 2
+                    || form.firstName.Length < 1 || form.lastName.Length < 1)
+                {
+                    hasBadField = false;
+                }
+
+                if (form.Password1 != form.Password2 || form.Password1.Length < 6)
                 {
                     hasDifPass = true;
                 }
@@ -66,15 +75,18 @@ namespace LIMS
                 if (!rdr.Read() && !hasError)
                 {
                     Console.WriteLine("Register: No Error in fields");
-                    // create a random salt to hash the password with to guard against rainbow tables and other site breaches
+                    // create a random salt to hash the password with to
+                    //guard against rainbow tables and other site breaches
                     var rand = new Random((int)Stopwatch.GetTimestamp());
                     SHA256 hash = SHA256.Create();
 
                     var salt = hash.ComputeHash(Encoding.ASCII.GetBytes(form.Username + rand.Next().ToString()));
                     var hashedPassword = hash.ComputeHash(Encoding.ASCII.GetBytes(form.Password1 + salt));
 
-                    sql = "INSERT INTO Users(username,password,salt,accountType,firstName,lastName,address,city,zip,state,phone) " +
-                          "VALUES (@USERNAME, @PASSWORD, @SALT, 'guest', @FIRSTNAME, @LASTNAME, @ADDRESS, @CITY, @ZIP, @STATE, @PHONE)";
+                    sql = "INSERT INTO Users(username,password,salt,accountType," 
+                                + "firstName,lastName,address,city,zip,state,phone) " +
+                          "VALUES (@USERNAME, @PASSWORD, @SALT, 'guest', " 
+                                + "@FIRSTNAME, @LASTNAME, @ADDRESS, @CITY, @ZIP, @STATE, @PHONE)";
                     cmd = new MySqlCommand(sql, trans.Connection);
                     cmd.Parameters.AddWithValue("@USERNAME", form.Username);
                     cmd.Parameters.AddWithValue("@PASSWORD", hashedPassword);
@@ -96,7 +108,7 @@ namespace LIMS
                 rdr.Close();
                 if (hasError)
                 {
-                    return new JsonResult($"{{\"hasNullField\":\"{hasNull}\"," +
+                    return new JsonResult($"{{\"hasBadField\":\"{hasBadField}\"," +
                                           $"\"hasDifferentPasswords\":\"{hasDifPass}\"," +
                                           $"\"isUsernameTaken\":\"{isUnameTaken}\"," +
                                           $"\"success\":\"false\"}}", new System.Text.Json.JsonSerializerOptions());
