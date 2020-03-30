@@ -28,6 +28,7 @@ are employees at a library as well as library customers.
     a. Connect to your MySQL Server  
     b. Run the database building script */scripts/create_lims_db.sql*  
 4. Configure the database connection in */LIMS/DB_Config.json*  
+5. Build the project using the Visual Studio build system
 
 ### Features Include: ####
 *Guest*
