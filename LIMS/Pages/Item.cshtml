@@ -1,13 +1,16 @@
 ﻿@page
+@using Microsoft.AspNetCore.Http
 @model LIMS.ItemModel
 @{
     ViewData["Title"] = "Item";
 }
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery AntiForgery;
 
 <div class="container w-100">
     <div class="row d-flex justify-content-center">
         <div class="d-flex col-6 mb-1">
-                <img src="~/images/@Model.ImagePath" class="d-block align-self-center" alt="">
+            <img src="~/images/@Model.ImagePath" class="d-block align-self-center" alt="">
         </div>
         <div class="col text-center mb-1">
             <ul class="list-group">
@@ -41,6 +44,12 @@
                 <li id="isbn" class="list-group-item">
                     @Model.ISBN
                 </li>
+                @if (Model.HttpContext.Session.GetString("accountType") == "user")
+                {
+                    <li id="reserve" class="list-group-item">
+                        <button id="reserve-button" class="btn list-group-item-warning">Reserve this book</button>
+                    </li>
+                }
             </ul>
         </div>
     </div>
@@ -56,4 +65,63 @@
             </ul>
         </div>
     </div>
+
+    @if (Model.HttpContext.Session.GetString("accountType") == "user")
+    {
+        <div class="row text-center">
+            <div class="col mb-1">
+                <div class="card-header">
+                    Review
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li id="summary " class="list-group-item">
+                        @Model.Summary
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#reserve-button").on("click", function () {
+            $("#reserve-button").prop("disabled", true);
+
+            console.log("Reserve book: Starting AJAX");
+            $.ajax({
+                type: "POST",
+                url: "Item",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    'RequestVerificationToken': '@AntiForgery.GetAndStoreTokens(HttpContext).RequestToken'
+                },
+                data: JSON.stringify({
+                    action: "reserve"
+                }),
+                success: function (data) {
+                    console.log("Successfully sent ajax request!");
+                    console.log(data);
+                    var json = JSON.parse(data);
+                    if (json.success === "false") {
+                        // TODO: CHECK WHAT THE PROBLEM WAS
+                        createToast("alert", "There was an error reserving your book!");
+                        $("#form-submit").prop("disabled", false);
+                    } else {
+                        createToast("success", "There was an error reserving your book!");
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // CHECK REASON FOR ERROR IN data
+                    console.log("AJAX POST ERROR");
+                    console.log(xhr);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    createToast("alert", "There was an error processing your form!");
+                    $("#reserve-button").prop("disabled", false);
+                }
+            }); // END of AJAX
+        }); // END of reserveBook
+    });
+</script>

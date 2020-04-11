@@ -45,7 +45,7 @@ namespace LIMS
                 {
                     var handler = new ConnectionHandler();
                     MySqlConnection connection = handler.Connection;
-                    string sql = "SELECT userid, password, salt FROM Users WHERE username=@USERNAME";
+                    string sql = "SELECT userid, password, salt, firstName, accountType FROM Users WHERE username=@USERNAME";
                     MySqlCommand cmd = new MySqlCommand(sql, connection);
                     cmd.Parameters.AddWithValue("@USERNAME", username);
                     using MySqlDataReader rdr = cmd.ExecuteReader();
@@ -54,6 +54,8 @@ namespace LIMS
                         var userid = rdr[0].ToString();
                         var hashedPassword = (string)rdr[1];
                         var salt = (string)rdr[2];
+                        var firstName = (string)rdr[3];
+                        var accountType = (string)rdr[4];
                         SHA256 hash = SHA256.Create();
                         // Salt the Password, convert it to a byte[], compute the hash, then convert back to string for comparison
                         var computedHash = Encoding.ASCII.GetString(hash.ComputeHash(Encoding.ASCII.GetBytes(password + salt)));
@@ -61,7 +63,10 @@ namespace LIMS
 
                         if (computedHash.ToString() == hashedPassword)
                         {
+                            // Set up the user's session
                             HttpContext.Session.SetString("userid", userid);
+                            HttpContext.Session.SetString("firstName", firstName);
+                            HttpContext.Session.SetString("accountType", accountType);
                             IsValid = true;
                         }
                         else

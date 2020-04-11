@@ -23,8 +23,8 @@ namespace LIMS
 
         public class RegistrationForm
         {
-            public string firstName { get; set; }
-            public string lastName { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
             public string Username { get; set; }
             public string Password1 { get; set; }
             public string Password2 { get; set; }
@@ -42,9 +42,10 @@ namespace LIMS
             var hasDifPass = false;
             var isUnameTaken = false;
             var errorMessage = "";
+            var success = false;
             try
             {
-                if (form.firstName == null || form.lastName == null || form.Username == null 
+                if (form.FirstName == null || form.LastName == null || form.Username == null 
                     || form.Password1 == null || form.Password2 == null || form.Address == null 
                     || form.City == null || form.State == null || form.Zip == null || form.Phone == null)
                 {
@@ -54,7 +55,7 @@ namespace LIMS
                 // these should be validated client side as well
                 if (form.Username.Length < 6 || form.Zip.Length != 5 || form.Phone.Length != 10 
                     || form.Address.Length < 2 || form.State.Length != 2 || form.City.Length < 2
-                    || form.firstName.Length < 1 || form.lastName.Length < 1)
+                    || form.FirstName.Length < 1 || form.LastName.Length < 1)
                 {
                     hasBadField = true;
                 }
@@ -93,7 +94,7 @@ namespace LIMS
 
                         sql = "INSERT INTO Users(username,password,salt,accountType,"
                                     + "firstName,lastName,address,city,zip,state,phone) " +
-                              "VALUES (@USERNAME, @PASSWORD, @SALT, 'guest', "
+                              "VALUES (@USERNAME, @PASSWORD, @SALT, 'user', "
                                     + "@FIRSTNAME, @LASTNAME, @ADDRESS, @CITY, @ZIP, @STATE, @PHONE)";
 
                         MySqlCommand insert_user = new MySqlCommand(sql, trans.Connection);
@@ -101,8 +102,8 @@ namespace LIMS
                         insert_user.Parameters.AddWithValue("@USERNAME", form.Username);
                         insert_user.Parameters.AddWithValue("@PASSWORD", hashedPassword);
                         insert_user.Parameters.AddWithValue("@SALT", salt);
-                        insert_user.Parameters.AddWithValue("@FIRSTNAME", form.firstName);
-                        insert_user.Parameters.AddWithValue("@LASTNAME", form.lastName);
+                        insert_user.Parameters.AddWithValue("@FIRSTNAME", form.FirstName);
+                        insert_user.Parameters.AddWithValue("@LASTNAME", form.LastName);
                         insert_user.Parameters.AddWithValue("@ADDRESS", form.Address);
                         insert_user.Parameters.AddWithValue("@CITY", form.City);
                         insert_user.Parameters.AddWithValue("@ZIP", form.Zip);
@@ -110,20 +111,21 @@ namespace LIMS
                         insert_user.Parameters.AddWithValue("@PHONE", form.Phone);
                         insert_user.ExecuteNonQuery();
                         trans.Commit();
-                        return new JsonResult("{\"success\":\"true\"}", new System.Text.Json.JsonSerializerOptions());
+                        success = true;
                     }
                 } 
             }
             catch (Exception ex)
             {
                 errorMessage = ex.ToString();
+                success = false;
                 Console.WriteLine(ex);
             }
 
             return new JsonResult($"{{\"hasBadField\":\"{hasBadField}\","
                                   + $"\"hasDifferentPasswords\":\"{hasDifPass}\","
                                   + $"\"isUsernameTaken\":\"{isUnameTaken}\","
-                                  + $"\"success\":\"false\"}}", new System.Text.Json.JsonSerializerOptions());
+                                  + $"\"success\":\"{success}\"}}", new System.Text.Json.JsonSerializerOptions());
         }
     }
 }
