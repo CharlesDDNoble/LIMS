@@ -33,9 +33,10 @@ are employees at a library as well as library customers.
 ### Features Include: ####
 *Guest*
 + Search results w/filtering by:
-    + Author
+    + Title (default) :heavy_check_mark:
+    + Author :heavy_check_mark:
     + Date published
-    + Genre
+    + Genre :heavy_check_mark:
     + Type (if differents products)
 
 *User:*
