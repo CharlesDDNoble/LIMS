@@ -46,6 +46,7 @@ are employees at a library as well as library customers.
 + Checking book availability (not reserved/checked out)
 
 *Employee:*
++ Checking out reserved books
 + Seeing when checked out books are available
 + Seeing what books are in stock
 + Adding new books and new copies of books to db
