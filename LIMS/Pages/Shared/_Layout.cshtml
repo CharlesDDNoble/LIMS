@@ -13,16 +13,6 @@
     <script type="text/javascript" src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
-    @if (Context.Session.GetString("userid") == null)
-    {
-        <p>userid not set</p>
-        Console.WriteLine("userid=\"" + Context.Session.GetString("userid") + "\"");
-    }
-    else
-    {
-        Console.WriteLine("userid=\"" + Context.Session.GetString("userid") + "\"");
-        <p>firstName = @Context.Session.GetString("firstName")</p>
-    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -39,9 +29,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Item">Item</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
-                        </li>
+                        @if (Context.Session.GetString("userId") == null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Profile">@Context.Session.GetString("firstName")</a>
+                            </li>
+                        }
+
                     </ul>
                     <form class="form-inline" method="get" action="~/Search">
                         <div class="input-group">

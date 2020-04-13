@@ -26,6 +26,12 @@ namespace LIMS
             ConnectionHandler handler = new ConnectionHandler(); // Read the JSon data on program startup
             handler.ReadJson();
 
+            // SynchronousIO configuration for reading request body
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
             // Sessions startup
             services.AddDistributedMemoryCache();
             services.AddSession(options =>

@@ -64,7 +64,7 @@ namespace LIMS
                         if (computedHash.ToString() == hashedPassword)
                         {
                             // Set up the user's session
-                            HttpContext.Session.SetString("userid", userid);
+                            HttpContext.Session.SetString("userId", userid);
                             HttpContext.Session.SetString("firstName", firstName);
                             HttpContext.Session.SetString("accountType", accountType);
                             IsValid = true;

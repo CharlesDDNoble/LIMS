@@ -9,8 +9,6 @@ using System.Security.Cryptography;
 using MySql.Data.MySqlClient;
 using System.Text;
 using System.Diagnostics;
-using Newtonsoft.Json;
-using System.IO;
 
 namespace LIMS
 {

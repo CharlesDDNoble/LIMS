@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Text;
+
 namespace LIMS
 {
     public class ItemModel : PageModel
@@ -21,39 +24,50 @@ namespace LIMS
 
         public class ItemForm
         {
-            public string Action { get; private set; }
+            public string Action { get; set; }
+            public string ISBN { get; set; }
+            public string UserId { get; set; }
         }
 
         public JsonResult OnPost([FromBody]ItemForm form)
         {
             var success = false;
             var isUnavailable = false;
-            Console.WriteLine("Item Form Action: " + form.Action);
-            if (form.Action == "reserve")
+
+            Console.WriteLine("Item Form Post Action: " + form.Action);
+            Console.WriteLine("data: {action:" + form.Action + ", isbn:" + form.ISBN + "}");
+            if (!ModelState.IsValid)
             {
+                Console.WriteLine("Item Form Post: Invalid model state!");
+            }
+            else if (form.Action == "reserve")
+            {
+                // TODO: Check if the user has any books already reserved
                 try
                 {
                     var handler = new ConnectionHandler();
                     using (MySqlConnection connection = handler.Connection)
                     {
                         MySqlTransaction trans = connection.BeginTransaction();
-                        string sql = "SELECT * FROM BookDetails WHERE ISBN=@ISBN WHERE availablity='available'";
-                        
+
+                        string sql = "SELECT bookId FROM BookDetails WHERE ISBN=@ISBN AND availability='available'";
                         MySqlCommand cmd = new MySqlCommand(sql, connection);
-                        cmd.Parameters.AddWithValue("@ISBN", ISBN);
                         cmd.Transaction = trans;
+                        
+                        cmd.Parameters.AddWithValue("@ISBN", form.ISBN);
                         MySqlDataReader rdr = cmd.ExecuteReader();
 
-                        var bookId = (string)rdr[0];
-                        if (bookId != null)
+                        if (rdr.Read())
                         {
-                            cmd.CommandText = "UPDATE BookDetails SET availablity='reserved' WHERE bookId=@BOOKID";
+                            int bookId = (int)rdr[0];
+                            rdr.Close();
+
+                            cmd.CommandText = "UPDATE BookDetails SET availability='reserved' WHERE bookId=@BOOKID";
                             cmd.Parameters.AddWithValue("@BOOKID", bookId);
                             cmd.ExecuteNonQuery();
 
                             cmd.CommandText = "INSERT INTO Reservations(userId, bookId, dateReserved) VALUES (@USERID, @BOOKID, @DATERESERVED)";
                             cmd.Parameters.AddWithValue("@USERID", HttpContext.Session.GetString("userId"));
-                            cmd.Parameters.AddWithValue("@BOOKID", bookId);
                             cmd.Parameters.AddWithValue("@DATERESERVED", new DateTime());
                             cmd.ExecuteNonQuery();
                             trans.Commit();

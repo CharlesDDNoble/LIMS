@@ -252,9 +252,9 @@
                         console.log("Successfully sent ajax request!");
                         console.log(data);
                         var json = JSON.parse(data);
-                        if (json.success === "false") {
+                        if (json.success === "False") {
                             // TODO: CHECK WHAT THE PROBLEM WAS
-                            createToast("alert", "There was an error processing your form!");
+                            createToast("alert", "There was an error processing your form! Check each field and make sure it's valid.");
                             $("#form-submit").prop("disabled", false);
                         } else {
                             window.location.replace("./Login?success=true");
@@ -266,7 +266,7 @@
                         console.log(xhr);
                         console.log(textStatus);
                         console.log(errorThrown);
-                        createToast("alert", "There was an error processing your form!");
+                        createToast("alert", "There was an internal error processing your form! Please try again later.");
                         $("#form-submit").prop("disabled", false);
                     }
                 }); // END of AJAX

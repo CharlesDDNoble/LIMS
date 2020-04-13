@@ -1,0 +1,25 @@
+﻿@page
+@model LIMS.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery AntiForgery;
+
+<div class="container w-100">
+    <h1>@Model.HttpContext.Session.GetString("firstName")</h1>
+
+    <div class="row d-flex justify-content-center">
+        <div class="d-flex col-6 mb-1">
+        </div>
+        <div class="col text-center mb-1">
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col mb-1">
+        </div>
+    </div>
+
+</div>

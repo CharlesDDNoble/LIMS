@@ -1,9 +1,10 @@
 ﻿@page
-@using Microsoft.AspNetCore.Http
 @model LIMS.ItemModel
 @{
     ViewData["Title"] = "Item";
 }
+
+@using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Antiforgery
 @inject IAntiforgery AntiForgery;
 
@@ -87,8 +88,16 @@
     $(document).ready(function () {
         $("#reserve-button").on("click", function () {
             $("#reserve-button").prop("disabled", true);
+            $("#reserve-button").addClass("bg-secondary");
 
             console.log("Reserve book: Starting AJAX");
+            var data = {
+                action: 'reserve',
+                ISBN: $("#isbn").text().trim()
+            };
+
+            console.log(data);
+
             $.ajax({
                 type: "POST",
                 url: "Item",
@@ -97,19 +106,19 @@
                 headers: {
                     'RequestVerificationToken': '@AntiForgery.GetAndStoreTokens(HttpContext).RequestToken'
                 },
-                data: JSON.stringify({
-                    action: "reserve"
-                }),
+                data: JSON.stringify(data),
                 success: function (data) {
                     console.log("Successfully sent ajax request!");
                     console.log(data);
                     var json = JSON.parse(data);
-                    if (json.success === "false") {
+                    if (json.success === "False") {
                         // TODO: CHECK WHAT THE PROBLEM WAS
-                        createToast("alert", "There was an error reserving your book!");
-                        $("#form-submit").prop("disabled", false);
+                        createToast("alert", "There was an error reserving your book!",125);
+                        $("#reserve-button").prop("disabled", false);
+                        $("#reserve-button").removeClass("bg-secondary");
+
                     } else {
-                        createToast("success", "There was an error reserving your book!");
+                        createToast("success", "The book has been reserved!",125);
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
@@ -118,8 +127,9 @@
                     console.log(xhr);
                     console.log(textStatus);
                     console.log(errorThrown);
-                    createToast("alert", "There was an error processing your form!");
+                    createToast("alert", "There was an internal error processing your request!",125);
                     $("#reserve-button").prop("disabled", false);
+                    $("#reserve-button").removeClass("bg-secondary");
                 }
             }); // END of AJAX
         }); // END of reserveBook
