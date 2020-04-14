@@ -40,12 +40,13 @@ are employees at a library as well as library customers.
     + Type (if differents products)
 
 *User:*
-+ Placing reservations
++ Placing reservations :heavy_check_mark:
 + Placing book requests
 + Reviewing Books
 + Checking book availability (not reserved/checked out)
 
 *Employee:*
++ Checking out books
 + Seeing when checked out books are available
 + Seeing what books are in stock
 + Adding new books and new copies of books to db
