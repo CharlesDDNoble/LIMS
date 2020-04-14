@@ -22,72 +22,164 @@ namespace LIMS
         public string ImagePath { get; private set; }
         public string Log { get; private set; }
 
+        public class Review
+        {
+            public Review() { }
+            public Review(string reviewText, string username, int rating) 
+            {
+                this.ReviewText = reviewText;
+                this.Username = username;
+                this.Rating = rating;
+            }
+            public string ReviewText { get; set; }
+            public string Username { get; set; }
+            public int Rating { get; set; }
+        }
+
+        public List<Review> Reviews { get; private set; } = new List<Review>();
+
         public class ItemForm
         {
             public string Action { get; set; }
             public string ISBN { get; set; }
-            public string UserId { get; set; }
+            public string Data { get; set; }
+        }
+
+        public JsonResult handleReserve(ItemForm form)
+        {
+            // TODO: Check if the user has any books already reserved
+            var success = false;
+            var isUnavailable = false;
+            try
+            {
+                var handler = new ConnectionHandler();
+                using (MySqlConnection connection = handler.Connection)
+                {
+                    MySqlTransaction trans = connection.BeginTransaction();
+
+                    string sql = "SELECT * FROM BookDetails WHERE ISBN=@ISBN AND availability='available'";
+                    MySqlCommand cmd = new MySqlCommand(sql, connection);
+                    cmd.Transaction = trans;
+
+                    cmd.Parameters.AddWithValue("@ISBN", form.ISBN);
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.Read())
+                    {
+                        int bookId = (int)rdr[0];
+                        rdr.Close();
+
+                        cmd.CommandText = "UPDATE BookDetails SET availability='reserved' WHERE bookId=@BOOKID";
+                        cmd.Parameters.AddWithValue("@BOOKID", bookId);
+                        cmd.ExecuteNonQuery();
+
+                        cmd.CommandText = "INSERT INTO Reservations(userId, bookId, dateReserved) VALUES (@USERID, @BOOKID, @DATERESERVED)";
+                        cmd.Parameters.AddWithValue("@USERID", HttpContext.Session.GetString("userId"));
+                        cmd.Parameters.AddWithValue("@DATERESERVED", new DateTime());
+                        cmd.ExecuteNonQuery();
+                        trans.Commit();
+                        success = true;
+                    }
+                    else
+                    {
+                        isUnavailable = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                Console.WriteLine(ex);
+            }
+            var reason = "unknown";
+            if (success)
+            {
+                reason = "none";
+            } 
+            else if (isUnavailable)
+            {
+                reason = "There is no available copy of the book";
+            }
+            return new JsonResult($"{{\"success\":\"{success}\"," +
+                                    $"\"reason\":\"{reason}\"}}", new System.Text.Json.JsonSerializerOptions());
+        }
+
+        public JsonResult handleReview(ItemForm form)
+        {
+            // TODO: Check if the user has any books already reserved
+            var success = false;
+            try
+            {
+                var handler = new ConnectionHandler();
+                using (MySqlConnection connection = handler.Connection)
+                {
+                    string sql = "SELECT reviewId FROM UserReviews WHERE ISBN=@ISBN AND userId=@USERID";
+                    MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+                    cmd.Parameters.AddWithValue("@ISBN", form.ISBN);
+                    cmd.Parameters.AddWithValue("@USERID", HttpContext.Session.GetString("userId"));
+                    int reviewId = -1;
+
+                    using (MySqlDataReader rdr = cmd.ExecuteReader()) {
+                        if (rdr.Read())
+                        {
+                            reviewId = (int)rdr[0];
+                        }
+                    }
+
+                    // if there is already a review of this book from the user, update it
+                    if (reviewId != -1)
+                    {
+                        cmd.CommandText = "UPDATE UserReviews SET reviewText=@REVIEWTEXT WHERE reviewId=@REVIEWID";
+                        cmd.Parameters.AddWithValue("@REVIEWTEXT", form.Data);
+                        cmd.Parameters.AddWithValue("@REVIEWID", reviewId);
+                        cmd.ExecuteNonQuery();
+                        success = true;
+                    } 
+                    else
+                    {
+                        cmd.CommandText = "INSERT INTO UserReviews(userId, ISBN, rating, reviewText) VALUES (@USERID, @ISBN, '0', @REVIEWTEXT)";
+                        cmd.Parameters.AddWithValue("@REVIEWTEXT", form.Data);
+                        cmd.ExecuteNonQuery();
+                        success = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                Console.WriteLine(ex);
+            }
+
+            var reason = "unknown";
+            if (success)
+            {
+                reason = "none";
+            }
+            return new JsonResult($"{{\"success\":\"{success}\"," +
+                                    $"\"reason\":\"{reason}\"}}", new System.Text.Json.JsonSerializerOptions());
         }
 
         public JsonResult OnPost([FromBody]ItemForm form)
         {
-            var success = false;
-            var isUnavailable = false;
+            JsonResult res = new JsonResult("{\"success\":\"False\"}", new System.Text.Json.JsonSerializerOptions());
 
             Console.WriteLine("Item Form Post Action: " + form.Action);
-            Console.WriteLine("data: {action:" + form.Action + ", isbn:" + form.ISBN + "}");
+            Console.WriteLine($"request: {{action: {form.Action}, data:{form.Data}}}");
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("Item Form Post: Invalid model state!");
             }
             else if (form.Action == "reserve")
             {
-                // TODO: Check if the user has any books already reserved
-                try
-                {
-                    var handler = new ConnectionHandler();
-                    using (MySqlConnection connection = handler.Connection)
-                    {
-                        MySqlTransaction trans = connection.BeginTransaction();
-
-                        string sql = "SELECT bookId FROM BookDetails WHERE ISBN=@ISBN AND availability='available'";
-                        MySqlCommand cmd = new MySqlCommand(sql, connection);
-                        cmd.Transaction = trans;
-                        
-                        cmd.Parameters.AddWithValue("@ISBN", form.ISBN);
-                        MySqlDataReader rdr = cmd.ExecuteReader();
-
-                        if (rdr.Read())
-                        {
-                            int bookId = (int)rdr[0];
-                            rdr.Close();
-
-                            cmd.CommandText = "UPDATE BookDetails SET availability='reserved' WHERE bookId=@BOOKID";
-                            cmd.Parameters.AddWithValue("@BOOKID", bookId);
-                            cmd.ExecuteNonQuery();
-
-                            cmd.CommandText = "INSERT INTO Reservations(userId, bookId, dateReserved) VALUES (@USERID, @BOOKID, @DATERESERVED)";
-                            cmd.Parameters.AddWithValue("@USERID", HttpContext.Session.GetString("userId"));
-                            cmd.Parameters.AddWithValue("@DATERESERVED", new DateTime());
-                            cmd.ExecuteNonQuery();
-                            trans.Commit();
-                            success = true;
-                        }
-                        else
-                        {
-                            isUnavailable = true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    Console.WriteLine(ex);
-                }
+                res = handleReserve(form);
             }
-            return new JsonResult($"{{\"success\":\"{success}\"," +
-                                $"\"isUnavailable\":\"{isUnavailable}\"," +
-                                $"\"action\":\"{form.Action}\"}}", new System.Text.Json.JsonSerializerOptions());
+            else if (form.Action == "review")
+            {
+                res = handleReview(form);
+            }
+
+            return res;
         }
 
 
@@ -108,18 +200,32 @@ namespace LIMS
                 string sql = "SELECT * FROM Books WHERE ISBN=@ISBN";
                 MySqlCommand cmd = new MySqlCommand(sql, connection);
                 cmd.Parameters.AddWithValue("@ISBN", ISBN);
-                MySqlDataReader rdr = cmd.ExecuteReader();
-                if (rdr.Read())
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
                 {
-                    //this.ISBN = (string) rdr[0];
-                    Title = (string)rdr[1];
-                    Genre = (string)rdr[2];
-                    Author = (string)rdr[3];
-                    Summary = (string)rdr[4];
-                    DatePublished = (DateTime)rdr[5];
-                    ImagePath = (string)rdr[6];
+                    if (rdr.Read())
+                    {
+                        //this.ISBN = (string) rdr[0];
+                        Title = (string)rdr[1];
+                        Genre = (string)rdr[2];
+                        Author = (string)rdr[3];
+                        Summary = (string)rdr[4];
+                        DatePublished = (DateTime)rdr[5];
+                        ImagePath = (string)rdr[6];
+                    }
                 }
-                rdr.Close();
+                cmd.CommandText =   "SELECT reviewText, username, rating " +
+                                    "FROM UserReviews " +
+                                    "INNER JOIN Users " +
+                                    "ON UserReviews.userId=Users.userId AND ISBN=@ISBN";
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        Review review = new Review((string)rdr[0], (string)rdr[1], (int)rdr[2]);
+                        Reviews.Add(review);
+                    }
+                }
             }
             catch (Exception ex)
             {

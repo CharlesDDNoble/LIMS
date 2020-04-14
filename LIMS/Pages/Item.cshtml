@@ -72,12 +72,37 @@
         <div class="row text-center">
             <div class="col mb-1">
                 <div class="card-header">
-                    Review
+                    Reviews
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li id="summary " class="list-group-item">
-                        @Model.Summary
+                    <li class="list-group-item">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Write a review</span>
+                            </div>
+                            <textarea id="user-review" class="form-control" aria-label="Write a review"></textarea>
+                            <div class="input-group-append">
+                                <button id="review-button" class="btn btn-outline-success">Send</button>
+                            </div>
+                        </div>
                     </li>
+                    @if (Model.Reviews.Count != 0)
+                    {
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <li class="list-group-item">
+                                @review.ReviewText
+                                <br />
+                                <small>- @review.Username</small>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            Be the first to review this book!
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
@@ -91,12 +116,13 @@
             $("#reserve-button").addClass("bg-secondary");
 
             console.log("Reserve book: Starting AJAX");
-            var data = {
+            var postData = {
                 action: 'reserve',
-                ISBN: $("#isbn").text().trim()
+                isbn: $("#isbn").text().trim(),
+                data: 'none'
             };
 
-            console.log(data);
+            console.log(postData);
 
             $.ajax({
                 type: "POST",
@@ -106,7 +132,7 @@
                 headers: {
                     'RequestVerificationToken': '@AntiForgery.GetAndStoreTokens(HttpContext).RequestToken'
                 },
-                data: JSON.stringify(data),
+                data: JSON.stringify(postData),
                 success: function (data) {
                     console.log("Successfully sent ajax request!");
                     console.log(data);
@@ -133,5 +159,51 @@
                 }
             }); // END of AJAX
         }); // END of reserveBook
+
+        $("#review-button").on("click", function () {
+            $("#review-button").prop("disabled", true);
+
+            console.log("Review book: Starting AJAX");
+            var postData = {
+                action: 'review',
+                isbn: $("#isbn").text().trim(),
+                data: $("#user-review").val().trim()
+            };
+
+            console.log(postData);
+
+            $.ajax({
+                type: "POST",
+                url: "Item",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    'RequestVerificationToken': '@AntiForgery.GetAndStoreTokens(HttpContext).RequestToken'
+                },
+                data: JSON.stringify(postData),
+                success: function (data) {
+                    console.log("Successfully sent ajax request!");
+                    console.log(data);
+                    var json = JSON.parse(data);
+                    if (json.success === "False") {
+                        // TODO: CHECK WHAT THE PROBLEM WAS
+                        createToast("alert", "There was an error sending your review!",125);
+                    } else {
+                        createToast("success", "Your review has been sent!",125);
+                    }
+                    $("#review-button").prop("disabled", false);
+
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // CHECK REASON FOR ERROR IN data
+                    console.log("AJAX POST ERROR");
+                    console.log(xhr);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    createToast("alert", "There was an internal error processing your request!",125);
+                    $("#review-button").prop("disabled", false);
+                }
+            }); // END of AJAX
+        }); // END of reviewBook
     });
 </script>
