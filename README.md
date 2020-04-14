@@ -42,7 +42,7 @@ are employees at a library as well as library customers.
 *User:*
 + Placing reservations :heavy_check_mark:
 + Placing book requests
-+ Reviewing Books
++ Reviewing Books :heavy_check_mark:
 + Checking book availability (not reserved/checked out)
 
 *Employee:*
