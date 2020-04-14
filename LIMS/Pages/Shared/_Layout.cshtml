@@ -40,6 +40,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Profile">@Context.Session.GetString("firstName")</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/Login?action=logout">Logout</a>
+                            </li>
                         }
 
                     </ul>

@@ -17,29 +17,38 @@ namespace LIMS
     {
         public class LoginForm
         {
+            public string Action { get; set; }
             public string Username { get; set; }
             public string Password { get; set; }
         }
-        
+
+        public string Action { get; set; }
         // Is the login information valid?
         public bool IsValid { get; private set; } = false;
 
-        // If success is true, then registration successful
-        // else if is false, then it was an unsuccessful login
-        public string SuccessString { get; private set; }
-
-
-        public void OnGet(string success)
+        public void OnGet(string action)
         {
-            SuccessString = success;
+            this.Action = action;
+            if (action == "logout")
+            {
+                HttpContext.Session.Clear();
+            }
+            else if (action == "register")
+            {
+                // Nothing to do currently
+            }
         }
 
-        public IActionResult OnPost(string username, string password)
+        public JsonResult OnPost([FromBody]LoginForm form)
         {
             Console.WriteLine("Login attempt...");
-            var url = "/Login?success=false";
+            var success = false;
+            var reason = "unknown";
 
-            if (username != null && password != null)
+            Console.WriteLine($"data: {{action:{form.Action},username:{form.Username},password:{form.Password}}}");
+
+
+            if (form.Username != null && form.Password != null)
             {
                 try
                 {
@@ -47,7 +56,7 @@ namespace LIMS
                     MySqlConnection connection = handler.Connection;
                     string sql = "SELECT userid, password, salt, firstName, accountType FROM Users WHERE username=@USERNAME";
                     MySqlCommand cmd = new MySqlCommand(sql, connection);
-                    cmd.Parameters.AddWithValue("@USERNAME", username);
+                    cmd.Parameters.AddWithValue("@USERNAME", form.Username);
                     using MySqlDataReader rdr = cmd.ExecuteReader();
                     if (rdr.Read())
                     {
@@ -58,7 +67,7 @@ namespace LIMS
                         var accountType = (string)rdr[4];
                         SHA256 hash = SHA256.Create();
                         // Salt the Password, convert it to a byte[], compute the hash, then convert back to string for comparison
-                        var computedHash = Encoding.ASCII.GetString(hash.ComputeHash(Encoding.ASCII.GetBytes(password + salt)));
+                        var computedHash = Encoding.ASCII.GetString(hash.ComputeHash(Encoding.ASCII.GetBytes(form.Password + salt)));
 
 
                         if (computedHash.ToString() == hashedPassword)
@@ -67,11 +76,14 @@ namespace LIMS
                             HttpContext.Session.SetString("userId", userid);
                             HttpContext.Session.SetString("firstName", firstName);
                             HttpContext.Session.SetString("accountType", accountType);
-                            IsValid = true;
+                            Console.WriteLine("Login attempt Succeeded");
+                            success = true; 
+                            reason = "none";
                         }
                         else
                         {
                             Console.WriteLine("Login attempt failed: mismatch info!");
+                            reason = "incorrect";
                         }
                     }
                 }
@@ -83,16 +95,12 @@ namespace LIMS
             }
             else
             {
+                reason = "incorrect";
                 Console.WriteLine("Login attempt failed: NULL FIELD");
             }
 
-            if (IsValid)
-            {
-                Console.WriteLine("Login attempt Succeeded");
-                url = "/Index";
-            }
-
-            return Redirect(url);
+            return new JsonResult($"{{\"success\":\"{success}\"," +
+                                    $"\"reason\":\"{reason}\"}}", new System.Text.Json.JsonSerializerOptions());
         }
     }
 }

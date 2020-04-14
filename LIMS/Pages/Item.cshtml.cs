@@ -21,7 +21,8 @@ namespace LIMS
         public string Summary { get; private set; } 
         public string ImagePath { get; private set; }
         public string Log { get; private set; }
-
+        public bool HasAvailableCopies { get; private set; }
+        public bool HasBookReserved { get; private set; }
         public class Review
         {
             public Review() { }
@@ -224,6 +225,34 @@ namespace LIMS
                     {
                         Review review = new Review((string)rdr[0], (string)rdr[1], (int)rdr[2]);
                         Reviews.Add(review);
+                    }
+                }
+                cmd.CommandText = "SELECT * FROM BookDetails WHERE ISBN=@ISBN AND availability='available'";
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    if (rdr.HasRows)
+                    {
+                        HasAvailableCopies = true;
+                    }
+                    else
+                    {
+                        HasAvailableCopies = false;
+                    }
+                }
+
+                cmd.CommandText = "SELECT * FROM Reservations WHERE userId=@USERID";
+                cmd.Parameters.AddWithValue("@USERID", HttpContext.Session.GetString("userId"));
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    if (rdr.HasRows)
+                    {
+                        HasBookReserved = true;
+                    }
+                    else
+                    {
+                        HasBookReserved= false;
                     }
                 }
             }
