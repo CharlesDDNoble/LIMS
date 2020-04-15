@@ -45,9 +45,6 @@ namespace LIMS
             var success = false;
             var reason = "unknown";
 
-            Console.WriteLine($"data: {{action:{form.Action},username:{form.Username},password:{form.Password}}}");
-
-
             if (form.Username != null && form.Password != null)
             {
                 try

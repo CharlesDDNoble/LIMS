@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Text;
+
 
 namespace LIMS
 {
@@ -74,9 +71,8 @@ namespace LIMS
                         cmd.Parameters.AddWithValue("@BOOKID", bookId);
                         cmd.ExecuteNonQuery();
 
-                        cmd.CommandText = "INSERT INTO Reservations(userId, bookId, dateReserved) VALUES (@USERID, @BOOKID, @DATERESERVED)";
+                        cmd.CommandText = "INSERT INTO Reservations(userId, bookId, dateReserved) VALUES (@USERID, @BOOKID, CURDATE())";
                         cmd.Parameters.AddWithValue("@USERID", HttpContext.Session.GetString("userId"));
-                        cmd.Parameters.AddWithValue("@DATERESERVED", new DateTime());
                         cmd.ExecuteNonQuery();
                         trans.Commit();
                         success = true;
