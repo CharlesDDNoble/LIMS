@@ -16,23 +16,30 @@
                     Profile
                 </li>
                 <li class="list-group-item">
-                    Add profile info
+                    Username: @Model.Username
+                </li>
+                <li class="list-group-item">
+                    Name:     @Model.FirstName @Model.LastName
+                </li>
+                <li class="list-group-item">
+                    Address:  @Model.Address, @Model.City, @Model.State, @Model.Zip
+                </li>
+                <li class="list-group-item">
+                    Phone:    @Model.Phone
                 </li>
             </ul>
         </div>
-        <div class="col-4 mb-1">
+        <div class="mb-1">
             <ul class="list-group">
                 <li id="request-header" class="list-group-item list-group-item-warning">
                     Request a Book
                 </li>
                 <li class="list-group-item needs-validation">
                     <div class="input-group">
-                        <input id="isbn" type="text" class="form-control" placeholder="978-0441013593" required>
+                        <input id="isbn" type="text" class="form-control" placeholder="978-0441013593" data-toggle="tooltip" data-placement="left" title="ISBN-13 of the requested book" required>
                         <div class="input-group-append">
                             <button id="request-button" class="btn btn-outline-success form-control" type="submit">→</button>
                         </div>
-                        <br />
-                        <small id="isbn-help" class="form-text text-muted">ISBN-13 of the book</small>
                     </div>
                 </li>
             </ul>
@@ -43,6 +50,10 @@
 
 <script>
     $(document).ready(function () {
+        // Initialize tooltips
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
 
         $("#request-button").on("click", function () {
             var isbn = $("#isbn").val().trim().replace('-', "");
