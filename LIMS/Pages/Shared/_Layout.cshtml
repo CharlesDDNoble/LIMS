@@ -26,9 +26,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Item">Item</a>
-                        </li>
                         @if (Context.Session.GetString("accountType") == "user")
                         {
                             <li class="nav-item">
