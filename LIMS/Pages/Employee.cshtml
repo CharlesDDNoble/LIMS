@@ -17,138 +17,176 @@
 }
 else
 {
-    <div class="container w-100">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="checkout-tab" data-toggle="tab" href="#checkout" role="tab" aria-controls="checkout" aria-selected="true">Checkout</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">Users</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="books-tab" data-toggle="tab" href="#books" role="tab" aria-controls="books" aria-selected="false">Books</a>
-            </li>
-        </ul>
+<div class="container w-100">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="checkout-tab" data-toggle="tab" href="#checkout" role="tab" aria-controls="checkout" aria-selected="true">Checkout</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="add-books-tab" data-toggle="tab" href="#add-books" role="tab" aria-controls="add-books" aria-selected="false">Add Books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="users-info-tab" data-toggle="tab" href="#users-info" role="tab" aria-controls="users-info" aria-selected="false">User Info</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="books-info-tab" data-toggle="tab" href="#books-info" role="tab" aria-controls="books-info" aria-selected="false">Book Info</a>
+        </li>
+    </ul>
 
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="checkout" role="tabpanel" aria-labelledby="checkout-tab">
-                <div class="d-flex">
-                    <ul class="list-group mx-auto mt-4">
-                        <li id="checkout-header" class="list-group-item list-group-item-warning">
-                            Checkout Book
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-row">
-                                <div class="form-group col-lg-3">
-                                    <input type="number" class="form-control" id="checkout-bookid" placeholder="BookId">
-                                </div>
-                                <div class="form-group col-lg-6">
-                                    <input type="text" class="form-control" id="checkout-username" placeholder="Username">
-                                </div>
-                                <div class="form-group col-lg-3">
-                                    <button id="checkout-button" class="btn btn-outline-success">Submit</button>
-                                </div>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="checkout" role="tabpanel" aria-labelledby="checkout-tab">
+            <div class="d-flex">
+                <ul class="list-group mx-auto mt-4">
+                    <li id="checkout-header" class="list-group-item list-group-item-warning">
+                        Checkout Book
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-row">
+                            <div class="form-group col-lg-3">
+                                <input type="number" class="form-control" id="checkout-bookid" placeholder="BookId">
                             </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
-                <div class="d-flex w-100">
-                    <table class="table table-hover table-striped table-dark mx-auto mt-4">
-                        <thead id="users-header">
-                            <tr>
-                                <th scope="col">
-                                    Username
-                                </th>
-                                <th scope="col">
-                                    Userid
-                                </th>
-                                <th scope="col">
-                                    Name
-                                </th>
-                                <th scope="col">
-                                    Address
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var row in Model.UserInfoList)
-                            {
-                                <tr scope="row">
-                                    <th scope="col">
-                                        @row.Username
-                                    </th>
-                                    <th scope="col">
-                                        @row.UserId
-                                    </th>
-                                    <th scope="col">
-                                        @row.FirstName @row.LastName
-                                    </th>
-                                    <th scope="col">
-                                        @row.Address
-                                    </th>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="books" role="tabpanel" aria-labelledby="books-tab">
-                <div class="d-flex w-100">
-                    <table class="table table-hover table-striped table-dark mx-auto mt-4">
-                        <thead id="users-header">
-                            <tr>
-                                <th scope="col">
-                                    BookId
-                                </th>
-                                <th scope="col">
-                                    ISBN
-                                </th>
-                                <th scope="col">
-                                    Availability
-                                </th>
-                                <th scope="col">
-                                    Location
-                                </th>
-                                <th scope="col">
-                                    Condition
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var row in Model.BookInfoList)
-                            {
-                                <tr scope="row">
-                                    <th scope="col">
-                                        @row.BookId
-                                    </th>
-                                    <th scope="col">
-                                        @row.ISBN
-                                    </th>
-                                    <th scope="col">
-                                        @row.Availability
-                                    </th>
-                                    <th scope="col">
-                                        @row.Location
-                                    </th>
-                                    <th scope="col">
-                                        @row.Condition
-                                    </th>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control" id="checkout-username" placeholder="Username">
+                            </div>
+                            <div class="form-group col-lg-3">
+                                <button id="checkout-button" class="btn btn-outline-success">Submit</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
 
+        <div class="tab-pane fade" id="add-books" role="tabpanel" aria-labelledby="add-books-tab">
+            <div class="d-flex">
+                <ul class="list-group mx-auto mt-4">
+                    <li id="add-books-header" class="list-group-item list-group-item-warning">
+                        Add Books
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-row">
+                            <div class="form-group col-lg-3">
+                                <input type="number" class="form-control" id="checkout-bookid" placeholder="BookId">
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control" id="checkout-username" placeholder="Username">
+                            </div>
+                            <div class="form-group col-lg-3">
+                                <button id="checkout-button" class="btn btn-outline-success">Submit</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-row">
+                            <div class="form-group col-lg-3">
+                                <input type="number" class="form-control" id="checkout-bookid" placeholder="BookId">
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control" id="checkout-username" placeholder="Username">
+                            </div>
+                            <div class="form-group col-lg-3">
+                                <button id="checkout-button" class="btn btn-outline-success">Submit</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    
+        <div class="tab-pane fade" id="users-info" role="tabpanel" aria-labelledby="users-info-tab">
+            <div class="d-flex w-100">
+                <table class="table table-hover table-striped table-dark mx-auto mt-4">
+                    <thead id="users-header">
+                        <tr>
+                            <th scope="col">
+                                Username
+                            </th>
+                            <th scope="col">
+                                Userid
+                            </th>
+                            <th scope="col">
+                                Name
+                            </th>
+                            <th scope="col">
+                                Address
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.UserInfoList)
+                        {
+                            <tr scope="row">
+                                <th scope="col">
+                                    @row.Username
+                                </th>
+                                <th scope="col">
+                                    @row.UserId
+                                </th>
+                                <th scope="col">
+                                    @row.FirstName @row.LastName
+                                </th>
+                                <th scope="col">
+                                    @row.Address
+                                </th>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="books-info" role="tabpanel" aria-labelledby="books-info-tab">
+            <div class="d-flex w-100">
+                <table class="table table-hover table-striped table-dark mx-auto mt-4">
+                    <thead id="users-header">
+                        <tr>
+                            <th scope="col">
+                                BookId
+                            </th>
+                            <th scope="col">
+                                ISBN
+                            </th>
+                            <th scope="col">
+                                Availability
+                            </th>
+                            <th scope="col">
+                                Location
+                            </th>
+                            <th scope="col">
+                                Condition
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.BookInfoList)
+                        {
+                            <tr scope="row">
+                                <th scope="col">
+                                    @row.BookId
+                                </th>
+                                <th scope="col">
+                                    @row.ISBN
+                                </th>
+                                <th scope="col">
+                                    @row.Availability
+                                </th>
+                                <th scope="col">
+                                    @row.Location
+                                </th>
+                                <th scope="col">
+                                    @row.Condition
+                                </th>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+</div>
 }
 
-<script>
+    <script>
     $(document).ready(function () {
         // Initialize tooltips
         $(function () {
@@ -215,4 +253,4 @@ else
         }); // END of checkout
 
     });
-</script>
+    </script>
