@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Login";
 }
+@using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Antiforgery
 @inject IAntiforgery AntiForgery;
 
@@ -23,16 +24,20 @@
     </div>
 </div>
 
+@if (Model.HttpContext.Session.GetString("userId") != null)
+{
+    <script>
+        location.replace("/Index");
+    </script>
+}
 <script>
     $(document).ready(function () {
-
 
         if ("@Model.Action" === "register") {
             createToast("success", "Congratulations! Your registration was successful!");
         } else if ("@Model.Action" === "logout") {
             createToast("success", "You've been logout, see you soon!");
         }
-
 
         $("#login-button").on("click", function () {
             var postData = {
@@ -65,7 +70,7 @@
                         $("#login-button").prop("disabled", false);
                         $("#login-button").removeClass("bg-secondary text-white");
                     } else {
-                        window.location.href = "/Index";
+                        location.replace("/Index");
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {

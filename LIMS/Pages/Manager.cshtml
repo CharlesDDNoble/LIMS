@@ -1,0 +1,218 @@
+﻿@page
+@model LIMS.ManagerModel
+@{
+    ViewData["Title"] = "Manager";
+}
+
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery AntiForgery;
+
+@if (Model.HttpContext.Session.GetString("accountType") != "manager")
+{
+    <script>
+        location.replace("/Index");
+    </script>
+}
+else
+{
+<div class="container w-100">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="checkout-tab" data-toggle="tab" href="#checkout" role="tab" aria-controls="checkout" aria-selected="true">Checkout</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="books-tab" data-toggle="tab" href="#books" role="tab" aria-controls="books" aria-selected="false">Books</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="checkout" role="tabpanel" aria-labelledby="checkout-tab">
+            <div class="d-flex">
+                <ul class="list-group mx-auto mt-4">
+                    <li id="checkout-header" class="list-group-item list-group-item-warning">
+                        Checkout Book
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-row">
+                            <div class="form-group col-lg-3">
+                                <input type="number" class="form-control" id="checkout-bookid" placeholder="BookId">
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control" id="checkout-username" placeholder="Username">
+                            </div>
+                            <div class="form-group col-lg-3">
+                                <button id="checkout-button" class="btn btn-outline-success">Submit</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+            <div class="d-flex w-100">
+                <table class="table table-striped table-dark mx-auto mt-4">
+                    <thead id="users-header">
+                        <tr>
+                            <th scope="col">
+                                Username
+                            </th>
+                            <th scope="col">
+                                Userid
+                            </th>
+                            <th scope="col">
+                                Name
+                            </th>
+                            <th scope="col">
+                                Address
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- foreach (var row in Model.UserInfoList)
+                        {
+                            <tr scope="row">
+                                <th scope="col">
+                                    row.Username
+                                </th>
+                                <th scope="col">
+                                    row.UserId
+                                </th>
+                                <th scope="col">
+                                    row.FirstName row.LastName
+                                </th>
+                                <th scope="col">
+                                    row.Address
+                                </th>
+                            </tr>
+                        }-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="books" role="tabpanel" aria-labelledby="books-tab">
+            <div class="d-flex w-100">
+                <table class="table table-striped table-dark mx-auto mt-4">
+                    <thead id="users-header">
+                        <tr>
+                            <th scope="col">
+                                BookId
+                            </th>
+                            <th scope="col">
+                                ISBN
+                            </th>
+                            <th scope="col">
+                                Availability
+                            </th>
+                            <th scope="col">
+                                Location
+                            </th>
+                            <th scope="col">
+                                Condition
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--foreach (var row in Model.BookInfoList)
+                        {
+                            <tr scope="row">
+                                <th scope="col">
+                                    row.BookId
+                                </th>
+                                <th scope="col">
+                                    row.ISBN
+                                </th>
+                                <th scope="col">
+                                    row.Availability
+                                </th>
+                                <th scope="col">
+                                    row.Location
+                                </th>
+                                <th scope="col">
+                                    row.Condition
+                                </th>
+                            </tr>
+                        }
+                        -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<script>
+    $(document).ready(function () {
+        // Initialize tooltips
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        $("#checkout-button").on("click", function () {
+            var bookId = $("#checkout-bookid").val().trim();
+            var username = $("#checkout-username").val().trim();
+            // ToDo: Validate input
+            if (false) {
+                createToast("alert","Please provide a valid input",125)
+            } else {
+                var postData = {
+                    action: 'checkout',
+                    bookId: bookId,
+                    username: username,
+                }
+                console.log(postData);
+                $("#checkout-button").prop("disabled", true);
+                $("#checkout-button").addClass("bg-secondary text-white");
+
+                $.ajax({
+                    type: "POST",
+                    url: "Employee",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        'RequestVerificationToken': '@AntiForgery.GetAndStoreTokens(HttpContext).RequestToken'
+                    },
+                    data: JSON.stringify(postData),
+                    success: function (data) {
+                        console.log("Successfully sent ajax checkout!");
+                        console.log(data);
+                        var json = JSON.parse(data);
+                        if (json.success === "False") {
+                            if (json.reason === "unknown") {
+                                createToast("alert", "There was an internal error processing your checkout!", 125);
+                            } else if (json.reason === "badUsername") {
+                                createToast("alert", "Invalid username!", 125)
+                            } else if (json.reason === "badBookId") {
+                                createToast("alert", "Invalid bookId!", 125);
+                            } else if (json.reason === "multipleCheckout") {
+                                createToast("alert", "User has a book checked out already!", 125);
+                            } else if (json.reason === "unavailable") {
+                                createToast("alert", "Book is not available (either checked out or reserved by another user)!", 125);
+                            }
+                        } else {
+                            createToast("success", "The book has been checked out!", 125);
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        // CHECK REASON FOR ERROR IN data
+                        console.log("AJAX POST ERROR");
+                        console.log(xhr);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                        createToast("alert", "There was an internal error processing your checkout!", 125);
+                    }
+                }); // END of AJAX
+                $("#checkout-button").prop("disabled", false);
+                $("#checkout-button").removeClass("bg-secondary text-white");
+            }
+        }); // END of checkout
+
+    });
+</script>
+
