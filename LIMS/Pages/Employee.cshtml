@@ -166,18 +166,18 @@ else
                         @foreach (var row in Model.UserInfoList)
                         {
                             <tr scope="row">
-                                <th scope="col">
+                                <td scope="col">
                                     @row.Username
-                                </th>
-                                <th scope="col">
+                                </td>
+                                <td scope="col">
                                     @row.UserId
-                                </th>
-                                <th scope="col">
+                                </td>
+                                <td scope="col">
                                     @row.FirstName @row.LastName
-                                </th>
-                                <th scope="col">
+                                </td>
+                                <td scope="col">
                                     @row.Address
-                                </th>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -211,21 +211,21 @@ else
                         @foreach (var row in Model.BookInfoList)
                         {
                             <tr scope="row">
-                                <th scope="col">
+                                <td scope="col">
                                     @row.BookId
-                                </th>
-                                <th scope="col">
+                                </td>
+                                <td scope="col">
                                     @row.ISBN
-                                </th>
-                                <th scope="col">
+                                </td>
+                                <td scope="col">
                                     @row.Availability
-                                </th>
-                                <th scope="col">
+                                </td>
+                                <td scope="col">
                                     @row.Location
-                                </th>
-                                <th scope="col">
+                                </td>
+                                <td scope="col">
                                     @row.Condition
-                                </th>
+                                </td>
                             </tr>
                         }
                     </tbody>

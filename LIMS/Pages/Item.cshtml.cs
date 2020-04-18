@@ -43,7 +43,7 @@ namespace LIMS
             public string Data { get; set; }
         }
 
-        public JsonResult handleReserve(ItemForm form)
+        public JsonResult HandleReserve(ItemForm form)
         {
             // TODO: Check if the user has any books already reserved
             var success = false;
@@ -101,7 +101,7 @@ namespace LIMS
                                     $"\"reason\":\"{reason}\"}}", new System.Text.Json.JsonSerializerOptions());
         }
 
-        public JsonResult handleReview(ItemForm form)
+        public JsonResult HandleReview(ItemForm form)
         {
             // TODO: Check if the user has any books already reserved
             var success = false;
@@ -169,11 +169,11 @@ namespace LIMS
             }
             else if (form.Action == "reserve")
             {
-                res = handleReserve(form);
+                res = HandleReserve(form);
             }
             else if (form.Action == "review")
             {
-                res = handleReview(form);
+                res = HandleReview(form);
             }
 
             return res;
