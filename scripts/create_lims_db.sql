@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `lims`.`BookDetails` (
     FOREIGN KEY (`ISBN`)
     REFERENCES `lims`.`Books` (`ISBN`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 9
+AUTO_INCREMENT = 15
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `lims`.`Users` (
   PRIMARY KEY (`userId`),
   UNIQUE INDEX `username` (`username` ASC))
 ENGINE = InnoDB
-AUTO_INCREMENT = 9
+AUTO_INCREMENT = 10
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -81,20 +81,21 @@ DEFAULT CHARACTER SET = latin1;
 CREATE TABLE IF NOT EXISTS `lims`.`BookHistory` (
   `bookHistoryId` INT(11) NOT NULL AUTO_INCREMENT,
   `userId` INT(11) NOT NULL,
-  `ISBN` CHAR(13) NOT NULL,
+  `bookId` INT(11) NULL DEFAULT NULL,
   `dateCheckout` DATE NULL DEFAULT NULL,
   `dateDue` DATE NULL DEFAULT NULL,
   `dateReturned` DATE NULL DEFAULT NULL,
   PRIMARY KEY (`bookHistoryId`),
   INDEX `userId` (`userId` ASC),
-  INDEX `ISBN` (`ISBN` ASC),
+  INDEX `bookId` (`bookId` ASC),
   CONSTRAINT `BookHistory_ibfk_1`
     FOREIGN KEY (`userId`)
     REFERENCES `lims`.`Users` (`userId`),
   CONSTRAINT `BookHistory_ibfk_2`
-    FOREIGN KEY (`ISBN`)
-    REFERENCES `lims`.`Books` (`ISBN`))
+    FOREIGN KEY (`bookId`)
+    REFERENCES `lims`.`BookDetails` (`bookId`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 7
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -111,11 +112,9 @@ CREATE TABLE IF NOT EXISTS `lims`.`BookRequests` (
   INDEX `ISBN` (`ISBN` ASC),
   CONSTRAINT `BookRequests_ibfk_1`
     FOREIGN KEY (`userId`)
-    REFERENCES `lims`.`Users` (`userId`),
-  CONSTRAINT `BookRequests_ibfk_2`
-    FOREIGN KEY (`ISBN`)
-    REFERENCES `lims`.`Books` (`ISBN`))
+    REFERENCES `lims`.`Users` (`userId`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -156,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `lims`.`Reservations` (
     FOREIGN KEY (`bookId`)
     REFERENCES `lims`.`BookDetails` (`bookId`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -179,8 +178,22 @@ CREATE TABLE IF NOT EXISTS `lims`.`UserReviews` (
     FOREIGN KEY (`ISBN`)
     REFERENCES `lims`.`Books` (`ISBN`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = latin1;
 
+USE `lims`;
+
+DELIMITER $$
+USE `lims`$$
+CREATE
+DEFINER=`admin`@`%`
+TRIGGER `lims`.`ins_checkout`
+BEFORE INSERT ON `lims`.`BookHistory`
+FOR EACH ROW
+SET NEW.dateDue = DATE_ADD(NEW.dateCheckout, INTERVAL 2 WEEK)$$
+
+
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
