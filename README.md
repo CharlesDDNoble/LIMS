@@ -53,5 +53,5 @@ are employees at a library as well as library customers.
 
 *Manager:*
 + Placing orders for new books
-+ Seeing book orders
-+ Checking book requests
++ Seeing book orders :heavy_check_mark:
++ Checking book requests :heavy_check_mark:
