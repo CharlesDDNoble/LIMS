@@ -190,6 +190,8 @@ namespace LIMS
                 ISBN = isbn;
             }
 
+            Console.WriteLine("ITEM Page ISBN=" + isbn);
+
             try
             {
                 var handler = new ConnectionHandler();
@@ -206,10 +208,13 @@ namespace LIMS
                         Genre = (string)rdr[2];
                         Author = (string)rdr[3];
                         Summary = (string)rdr[4];
-                        DatePublished = (DateTime)rdr[5];
+                        //DatePublished = (DateTime)rdr[5];
                         ImagePath = (string)rdr[6];
                     }
                 }
+
+                Console.WriteLine("ITEM Page ImagePath=" + ImagePath);
+
                 cmd.CommandText =   "SELECT reviewText, username, rating " +
                                     "FROM UserReviews " +
                                     "INNER JOIN Users " +

@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
+using System.Web;
+
 
 namespace LIMS
 {
@@ -16,8 +21,52 @@ namespace LIMS
         public class EmployeeForm
         {
             public string Action { get; set; }
+            public string Data { get; set; }
+        }
+
+        public class CheckoutForm
+        {
+            [JsonPropertyName("bookId")]
             public string BookId { get; set; }
+
+            [JsonPropertyName("username")]
             public string Username { get; set; }
+        }
+
+        public class BookForm
+        {
+            [JsonPropertyName("isbn")]
+            public string ISBN { get; set; }
+
+            [JsonPropertyName("title")]
+            public string Title { get; set; }
+            
+            [JsonPropertyName("genre")]
+            public string Genre { get; set; }
+
+            [JsonPropertyName("author")]
+            public string Author { get; set; }
+
+            [JsonPropertyName("summary")]
+            public string Summary { get; set; }
+
+            [JsonPropertyName("imageName")]
+            public string ImageName { get; set; }
+
+            [JsonPropertyName("image")]
+            public string Image { get; set; }
+        }
+
+        public class CopyForm
+        {
+            [JsonPropertyName("isbn")]
+            public string ISBN { get; set; }
+            
+            [JsonPropertyName("condition")]
+            public string Condition { get; set; }
+            
+            [JsonPropertyName("location")]
+            public string Location { get; set; }
         }
 
         public class BookInfo
@@ -61,10 +110,18 @@ namespace LIMS
 
         }
 
-        public JsonResult HandleCheckout([FromBody]EmployeeForm form)
+        public JsonResult HandleCheckout([FromBody]EmployeeForm eform)
         {
             var success = false;
             var reason = "unknown";
+
+            Console.WriteLine(eform.Data);
+
+            CheckoutForm form = JsonSerializer.Deserialize<CheckoutForm>(eform.Data);
+
+            Console.WriteLine(form.BookId);
+            Console.WriteLine(form.Username);
+
             try
             {
                 var handler = new ConnectionHandler();
@@ -181,15 +238,133 @@ namespace LIMS
                                     $"\"reason\":\"{reason}\"}}", new System.Text.Json.JsonSerializerOptions());
         }
 
+
+        public JsonResult HandleAddBook(EmployeeForm eform)
+        {
+            var success = false;
+            var reason = "unknown";
+
+            Console.WriteLine(eform.Data);
+
+
+            BookForm form = JsonSerializer.Deserialize<BookForm>(eform.Data);
+            try
+            {
+                var absoluteImagePath = Path.GetFullPath(".") + "\\wwwroot\\images\\" + form.ImageName;
+                var imageBase64 = form.Image.Replace("data:image/jpeg;base64,", "");
+                
+                
+                var handler = new ConnectionHandler();
+                using (MySqlConnection connection = handler.Connection)
+                {
+                    string sql = "SELECT * FROM Books WHERE ISBN=@ISBN";
+
+                    MySqlCommand cmd = new MySqlCommand(sql, connection);
+                    cmd.Parameters.AddWithValue("@ISBN", form.ISBN);
+
+                    var hasBookAlready = false;
+
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            hasBookAlready = true;
+                        }
+                    }
+                    
+                    if (!hasBookAlready)
+                    {
+                        cmd.CommandText = "INSERT INTO Books(ISBN,title,genre,author,summary,imagePath) VALUES (@ISBN,@TITLE,@GENRE,@AUTHOR,@SUMMARY,@IMAGEPATH)";
+                        cmd.Parameters.AddWithValue("@TITLE", form.Title);
+                        cmd.Parameters.AddWithValue("@GENRE", form.Genre);
+                        cmd.Parameters.AddWithValue("@AUTHOR", form.Author);
+                        cmd.Parameters.AddWithValue("@SUMMARY", form.Summary);
+                        cmd.Parameters.AddWithValue("@IMAGEPATH", form.ImageName);
+                        cmd.ExecuteNonQuery();
+
+                        System.IO.File.WriteAllBytes(absoluteImagePath, Convert.FromBase64String(imageBase64));
+                        success = true;
+                    }
+                    else
+                    {
+                        reason = "bookExists";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                Console.WriteLine(ex);
+            }
+            if (success)
+            {
+                reason = "none";
+            }
+
+            return new JsonResult($"{{\"success\":\"{success}\"," +
+                                    $"\"reason\":\"{reason}\"}}", new System.Text.Json.JsonSerializerOptions());
+        }
+
+        public JsonResult HandleAddCopy(EmployeeForm eform)
+        {
+            var success = false;
+            var reason = "unknown";
+
+            Console.WriteLine(eform.Data);
+
+            CopyForm form = JsonSerializer.Deserialize<CopyForm>(eform.Data);
+            try
+            {
+                var handler = new ConnectionHandler();
+                using (MySqlConnection connection = handler.Connection)
+                {
+                    string sql = "INSERT INTO BookDetails(ISBN, bookCondition, location, availability) " +
+                                 "VALUES (@ISBN, @CONDITION, @LOCATION, 'available')";
+                    MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+                    cmd.Parameters.AddWithValue("@ISBN", form.ISBN);
+                    cmd.Parameters.AddWithValue("@CONDITION", form.Condition);
+                    cmd.Parameters.AddWithValue("@LOCATION", form.Location);
+                    cmd.ExecuteNonQuery();
+
+                    success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                Console.WriteLine(ex);
+            }
+            if (success)
+            {
+                reason = "none";
+            }
+
+            return new JsonResult($"{{\"success\":\"{success}\"," +
+                                    $"\"reason\":\"{reason}\"}}", new System.Text.Json.JsonSerializerOptions());
+        }
+
         public JsonResult OnPost([FromBody]EmployeeForm form)
         {
             JsonResult res = new JsonResult("{\"success\":\"false\"," +
                                             "\"reason\":\"none\"}", new System.Text.Json.JsonSerializerOptions());
+            
+            Console.WriteLine($"Employee Form Action: {form.Action}");
+
             if (form.Action == "checkout")
             {
                 res = HandleCheckout(form);
             }
-
+            else if (form.Action == "addBook")
+            {
+                res = HandleAddBook(form);
+            }
+            else if (form.Action == "addCopy")
+            {
+                res = HandleAddCopy(form);
+            }
             return res;
         }
 
