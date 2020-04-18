@@ -17,7 +17,6 @@ are employees at a library as well as library customers.
 + Bootstrap 4.4.1
 
 ### Installation
-*I've (Charles) been using a local MySQL database to test the project. For now I'll assume that's what will be used until we get something else more concrete up and running.*  
 1. Install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) using the Visual Studio installer  
     a. within the Visual Studio installer, add the "ASP.NET and web development" package  
     b. within the Visual Studio installer, add the ".NET desktop development" package  
