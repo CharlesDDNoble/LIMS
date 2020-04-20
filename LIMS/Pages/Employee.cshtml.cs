@@ -347,7 +347,7 @@ namespace LIMS
 
         public JsonResult OnPost([FromBody]EmployeeForm form)
         {
-            JsonResult res = new JsonResult("{\"success\":\"false\"," +
+            JsonResult res = new JsonResult("{\"success\":\"False\"," +
                                             "\"reason\":\"none\"}", new System.Text.Json.JsonSerializerOptions());
             
             Console.WriteLine($"Employee Form Action: {form.Action}");
