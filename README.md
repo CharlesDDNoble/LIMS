@@ -15,6 +15,7 @@ are employees at a library as well as library customers.
 + MySQL 8.0.19
     - MySQL Connector/NET 8.0.19
 + Bootstrap 4.4.1
++ jQuery 3.3.1
 
 ### Installation
 1. Install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) using the Visual Studio installer  
