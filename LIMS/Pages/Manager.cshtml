@@ -186,11 +186,11 @@ else
         })
 
         $("#order-button").on("click", function () {
-            var isbn = $("#isbn").val().trim();
+            var isbn = $("#isbn").val().trim().replace("-","");
             var quantity = $("#quantity").val().trim();
             var dateOrdered = $("#date-ordered").val().trim();
             var dateExpected = $("#date-expected").val().trim();
-            if (false) {
+            if (isbn.length != 13) {
                 createToast("alert","Please provide a valid input",125)
             } else {
                 var postData = {

@@ -333,7 +333,7 @@ else
 
 
         $("#book-button").on("click", function () {
-            var isbn = $("#book-isbn").val().trim();
+            var isbn = $("#book-isbn").val().trim().replace("-","");
             var title = $("#book-title").val().trim();
             var author = $("#book-author").val().trim();
             var genre = $("#book-genre").val().trim();
@@ -341,8 +341,8 @@ else
             var image = $("#book-image-base64").val();
             var imageName = $("#book-image").val().replace('C:\\fakepath\\',"").replace("/","");
             // ToDo: Validate input
-            if (false) {
-                createToast("alert","Please provide a valid input",125)
+            if (isbn.length != 13) {
+                createToast("alert", "Please provide a valid isbn", 125);
             } else {
                 var postData = {
                     action: 'addBook',
@@ -399,11 +399,11 @@ else
 
 
         $("#copy-button").on("click", function () {
-            var isbn = $("#copy-isbn").val().trim();
+            var isbn = $("#copy-isbn").val().trim().replace("-","");
             var condition = $("#copy-condition").val().trim();
             var location = $("#copy-location").val().trim();
             // ToDo: Validate input
-            if (false) {
+            if (isbn.length != 13) {
                 createToast("alert","Please provide a valid input",125)
             } else {
                 var postData = {

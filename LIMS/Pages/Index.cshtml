@@ -10,7 +10,7 @@
             @foreach (var item in Model.CarouselList)
             {
                 <div id="@item.ISBN" class="carousel-item">
-                    <img src="~/images/@item.ImagePath" class="d-block w-50" alt="" style="cursor: pointer;">
+                    <img src="~/images/@item.ImagePath" class="d-block w-50" alt="" style="cursor: pointer; max-height: 500px;">
                 </div>
             }
             <script>
