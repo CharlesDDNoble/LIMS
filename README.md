@@ -51,6 +51,6 @@ are employees at a library as well as library customers.
 + Adding new books and new copies of books to db :heavy_check_mark:
 
 *Manager:*
-+ Placing orders for new books
++ Placing orders for new books :heavy_check_mark:
 + Seeing book orders :heavy_check_mark:
 + Checking book requests :heavy_check_mark:
