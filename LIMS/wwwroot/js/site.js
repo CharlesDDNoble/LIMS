@@ -7,8 +7,8 @@ function createToast(type, text, height=75) {
     if (type === "success") {
         header = "Success"
     }
-    $("main").prepend(`
-        <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center" style="min-height: ${height}px;">
+    $("#toaster").prepend(`
+        <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center" style="min-height: ${height}px; position: relative;">
             <div id="toast-generic" class="toast" role="${type}" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <strong class="mr-auto">${header}</strong>
