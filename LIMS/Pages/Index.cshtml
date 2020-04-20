@@ -7,15 +7,19 @@
 <div class="text-center">
     <div id="content-carousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner border">
-            <div class="carousel-item active">
-                <img src="~/images/placeholder.gif" class="d-block w-50" alt="">
-            </div>
-            <div class="carousel-item">
-                <img src="~/images/placeholder.gif" class="d-block w-50" alt="">
-            </div>
-            <div class="carousel-item">
-                <img src="~/images/placeholder.gif" class="d-block w-50" alt="">
-            </div>
+            @foreach (var item in Model.CarouselList)
+            {
+                <div id="@item.ISBN" class="carousel-item">
+                    <img src="~/images/@item.ImagePath" class="d-block w-50" alt="" style="cursor: pointer;">
+                </div>
+            }
+            <script>
+                $(".carousel-item").first().addClass("active");
+                $(".carousel-item img").on('click', function () {
+                    var isbn = $(this).parent().attr('id');
+                    window.location = "Item?isbn=" + isbn; 
+                });
+            </script>
         </div>
         <a class="carousel-control-prev" href="#content-carousel" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon h3" style="color: black;"><</span>
