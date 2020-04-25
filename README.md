@@ -2,7 +2,7 @@
 
 ### Description
 This is the Library Inventory Management System (LIMS) made as part of our 
-(*insert names*) WMU Database Management Class Final in 2020. The LIMS 
+WMU Database Management Class Final in 2020. The LIMS 
 replicates a standard library inventory tracking system using C# as the 
 base language and MySQL as the DBMS. The intended users of the application 
 are employees at a library as well as library customers. 
